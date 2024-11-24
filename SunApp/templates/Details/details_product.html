@@ -1,0 +1,105 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Responsive Profile Page</title>
+	<!-- Font Awesome -->
+	<!-- Box Icone -->
+    <link rel="stylesheet" href="{% static 'assets/icones/font-awesome/css/font-awesome.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/icones/font-awesome/css/font-awesome.min.css' %}">
+
+    <!-- Style -->
+    <link rel="stylesheet" href="{% static 'assets/ressources/styles/profile.css' %}">
+	</head>
+	<body>
+		<div class="header__wrapper">
+			<header>
+				<img src="{% static "assets/delete/banner/back4.jpg" %}">
+			</header>
+			<div class="cols__container">
+				<div class="left__col">
+
+					<div class="img__container">
+						<img src="{% static "assets/delete/banner/back1.jpg" %}"/>
+						<span></span>
+					</div>
+					<h2>{{ product.user.nom_boutique }}</h2>
+					<p>{{ product.user.email }}</p>
+
+                    <ul class="about">
+						<li><span><i class="fa fa-map-marker gold"></i></span>{{ product.user.pays }}</li>
+						<li><span><i class="fa fa-map gold"></i></span>{{ product.user.ville }}</li>
+						<li><span><i class="fa fa-home gold"></i></span>{{ product.user.quartier }}</li>
+					</ul>
+
+
+					<div class="content">
+                        <p>
+                            Vous pouvez contacter ce boutique via ces boutons en dessous(appel téléphonique, whatsapp, email). En cliquant sur ces boutons, vous les contacterez directement sans intermediaire.
+                        </p>
+						<ul>
+                            <li> <a class="primary" href="tel:+{{ product.user.indicatif_pays }} {{ product.user.number_phone }}"><i class="fa fa-phone"></i></a></li>
+                            <li> <a class="success" href="https://wa.me/+{{ product.user.indicatif_pays }}{{ product.user.number_phone }}"><i class="fa fa-whatsapp"></i></a></li>
+                            <li> <a class="danger" href="mailto:{{ product.user.email }}"><i class="fa fa-envelope"></i></a></li>
+						</ul>
+					</div>
+
+				</div>
+
+				<div class="right__col">
+					<nav>
+						<ul>
+						<li><a href="#">Produits</a></li>
+						</ul>
+						<button>
+							<a href="{% url 'user_detail' user_id=product.user.id %}">
+								Visiter La Boutique
+							</a>
+						</button>
+					</nav>
+
+					<div class="photos">
+						<img src="{{ product.image.url }}"/>
+						<div class="details">
+							<h1>{{ product.title }}</h1>
+							<p>
+								{{ product.contenu_post }}
+                                <br> <br>
+                                <em class="gold">Mis en vente depuis le {{ product.date_creation_post|date:"d F Y à H:i" }}</em>
+							</p>
+							<span>{{ product.prix }} <br> FCFA</span>
+
+						</div>
+					</div>
+				</div>
+			</div>
+			<center>
+				{% if user.is_authenticated %}
+					{% if is_in_facture %}
+						<!-- Afficher le bouton pour enlever le produit de la facture -->
+						<form method="POST" action="{% url 'product_detail' product_id=product.id %}">
+							{% csrf_token %}
+							<button type="submit" name="remove">Enlever de la Facture</button>
+						</form>
+					{% else %}
+						<!-- Afficher le bouton pour ajouter le produit à la facture -->
+						<form method="POST" action="{% url 'product_detail' product_id=product.id %}">
+							{% csrf_token %}
+							<label for="quantity">Quantité :</label>
+							<input type="number" id="quantity" name="quantity" value="1" min="1" required>
+							<button type="submit">Ajouter au Facture</button>
+						</form>
+					{% endif %}
+				{% else %}
+					<p>Veuillez vous connecter pour gérer votre facture.</p>
+				{% endif %}
+				
+			</center>
+			
+		</div>
+	</body>
+</html>

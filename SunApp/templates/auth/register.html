@@ -1,0 +1,117 @@
+{% extends 'auth/layouts/forms.html' %}
+{% load static %}
+
+{% block Authentification %}
+<img src="{% static 'assets/logo/bio.jpg' %}">
+
+<div id="wrapper">
+    <div class="form-container">
+        <span class="form-heading">Inscription</span>
+        {% if form.errors %}
+            <div class="alert alert-danger">
+                <strong class="danger">🫡 ERREUR!</strong> 
+                <i>
+                    Veuillez corriger les erreurs ci-dessous!
+                </i>
+                <ul class="messages-error">
+                    {% for field, error in form.errors.items %}
+                        {% for message in error %}
+                            <li>-👉 {{ message }}</li>
+                        {% endfor %}
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+        <form method="POST" action="/register">
+
+            {% csrf_token %}
+
+            <div class="inputfield">
+                <label><i class="fa fa-briefcase"></i>Type</label>
+                <div class="custom_select">
+                    {{ form.rôle }}
+                </div>
+            </div>
+
+            <div class="inputfield">
+                <label><i class="fa fa-transgender"></i>Gender</label>
+                <div class="custom_select">
+                    {{ form.genre }}
+                </div>
+            </div>
+
+            <div class="inputfield">
+                <label><i class="fa fa-user-secret"></i>Pseudo</label>
+                {{ form.username }}
+                <span class="bar"></span>
+            </div>
+
+            <div class="inputfield">
+                <label><i class="fa fa-shopping-bag"></i>Nom de votre Boutique</label>
+                {{ form.nom_boutique }}
+                <span class="bar"></span>
+            </div>
+
+            <div class="inputfield">
+                <label><i class="fa fa-envelope"></i>Email</label>
+                {{ form.email }}
+                <span class="bar"></span>
+            </div>
+
+            <div class="inputfield">
+                <label><i class="fa fa-unlock"></i>Password</label>
+                {{ form.password1 }}
+                <span class="bar"></span>
+            </div>
+
+            <div class="inputfield">
+                <label><i class="fa fa-lock"></i>Confirm</label>
+                {{ form.password2 }}
+                <span class="bar"></span>
+            </div>
+
+            <input type="hidden" id="latitude" name="latitude">
+            <input type="hidden" id="longitude" name="longitude">
+
+            <div class="inputfield terms">
+                <label class="check">
+                    <input type="checkbox">
+                    <span class="checkmark"></span>
+                </label>
+                <p>Vous acceptez 
+                    <a href="#" class="primary" style="font-weight: bold;"> les termes et condtions</a> 
+                    pour l'inscription!
+                </p>
+            </div>
+
+            <div class="input-group">
+                <button type="submit" name="inscription" value="S'inscrire">
+                    S'inscrire
+                </button>
+            </div>
+
+            <div class="switch-login">
+                <a href="/">
+                    <p class="danger">Déjà un Compte?
+                        <span class="white"> Se Connecter </span>
+                    </p>
+                </a>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+<script>
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            document.getElementById('latitude').value = position.coords.latitude;
+            document.getElementById('longitude').value = position.coords.longitude;
+        });
+    } else {
+        alert("La géolocalisation n'est pas supportée par ce navigateur.");
+    }
+</script>
+
+{% endblock %}

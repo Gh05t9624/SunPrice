@@ -1,0 +1,37 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link type="images/jpg" rel="icon" href="{% static 'assets/logo/galsen.jpg' %}">
+
+    <!-- Box Icone -->
+    <link rel="stylesheet" href="{% static 'assets/icones/font-awesome/css/font-awesome.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/icones/font-awesome/css/font-awesome.min.css' %}">
+
+    <!-- Style -->
+    <link rel="stylesheet" href="{% static 'assets/formulaires/styles/form.css' %}">
+
+    <title> Galsen </title>
+</head>
+<body>
+    <div id="app">
+
+        <main>
+
+            {% block Authentification %}
+        
+            {% endblock %}
+            
+        </main>
+    </div>
+
+    <script src="{% static 'assets/formulaires/scripts/edit.js' %}"></script>
+    <script src="{% static 'assets/formulaires/scripts/views.js' %}"></script>
+    <script src="{% static 'assets/algos/scripts/secrete.js' %}"></script>
+    <script src="{% static 'assets/ressources/scripts/Retour.js' %}"></script>
+
+</body>
+</html>

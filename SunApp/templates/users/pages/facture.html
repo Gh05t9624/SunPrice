@@ -1,0 +1,28 @@
+{% extends 'users/layouts/app.html' %}
+
+{% load static %}
+
+{% block contenu %}
+
+<section class="postes">
+
+    {% include 'users/common/slide_banner.html' %}
+
+    <h1 class="section_title"><i class="fa fa-shopping-bag gold"></i> Factures </h1>
+        <div class="products-grid">
+            {% for utilisateur in utilisateurs_publics %}
+                <a href="{% url 'facture_detail' utilisateur.id %}" class="product-card">
+                    <img src="{% static "assets/delete/banner/back1.jpg" %}">
+                    <p><i class="fa fa-map-marker gold"></i> pays, ville, quartier</p>
+                    <h4>{{ utilisateur.first_name }}</h4>
+                </a>
+                {% empty %}
+                <p>Aucun utilisateur avec des factures publiques dans votre région.</p>
+            {% endfor %}
+        </div>
+        {% include 'users/common/footer.html' %}
+</section>
+
+{% include 'users/common/sideleft.html' %}
+
+{% endblock %}

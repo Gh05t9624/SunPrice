@@ -1,0 +1,138 @@
+{% extends 'formulaires/layouts/base.html' %}
+
+{% block Base %}
+{% load static %}
+<img src="{% static 'assets/logo/boutique.jpg' %}" class="bg">
+<form method="post" action="{% url 'product' %}" enctype="multipart/form-data" id="mediaForm">
+    {% csrf_token %}
+
+    <header>
+        <a href="#" id="boutonRetour">
+            <i class="fa fa-arrow-left arrow"></i>
+        </a>
+        Poster Un Produit
+    </header>
+
+    <label for="imageFile" class="button">Choisissez une image :</label>
+
+    <input type="file" id="imageFile" accept="image/*" class="file" name="image">
+    <progress id="imageProgress" value="0" max="100"></progress>
+    <span id="imageProgressText">0%</span>
+    <div id="imageContainer"></div>
+
+    <div Style="display: none">
+        <label for="videoFile" class="button">Choisissez des vidéos :</label>
+
+        <input type="file" id="videoFile" accept="video/*" class="file" name="video">
+        <progress id="videoProgress" value="0" max="100"></progress>
+        <span id="videoProgressText">0%</span>
+        <div id="videoContainer"></div>
+    </div>
+
+    <div class="card">
+        <div class="input-group">
+            <i class="fa fa-list-alt"></i>
+            <div class="custom_select">
+                <select id="category" class="form-control" name="category" required>
+                    <option value="">-- Choisir une catégorie --</option>
+                    <option value="electronics">Électronique</option>
+                    <option value="fashion">Mode et Vêtements</option>
+                    <option value="home_garden">Maison et Jardin</option>
+                    <option value="beauty_health">Beauté et Santé</option>
+                    <option value="food_drink">Alimentation et Boissons</option>
+                    <option value="sports_leisure">Sport et Loisirs</option>
+                    <option value="books_media">Livres et Médias</option>
+                    <option value="toys_kids">Jouets et Enfants</option>
+                    <option value="automotive_tools">Automobile et Outils</option>
+                    <option value="pets">Animaux</option>
+                    <option value="services">Services et Abonnements</option>
+                    <option value="special_offers">Offres spéciales / Promotions</option>
+                </select>
+            </div>
+            
+        </div>
+    </div>
+
+    <div class="input-group wrapper" style="display: none;" id="countryField">
+        <i class="fa fa-map-marker">Pays de votre produit</i>
+        <div autocomplete="off">
+            <div>
+                <input type="text" class="form-control" id="countryInput" name="pays" placeholder="Votre pays" onchange="updateIndicatif()"autocomplete="off" />
+
+              <span class="bar"></span>
+            </div>
+            <ul class="list"></ul>
+        </div>
+    </div>
+
+    <div class="input-group" style="display: none;" id="cityField">
+        <i class="fa fa-map"> Ville de votre produit</i>
+        <input id="ville" type="text" class="form-control" name="ville" placeholder="Votre ville" autocomplete="off">
+        <span class="bar"></span>
+    </div>
+
+    <div class="input-group" style="display: none;" id="districtField">
+        <i class="fa fa-home">Quartier de votre produit</i>
+        <input id="quartier" type="text" class="form-control" name="quartier" placeholder="Votre quartier" autocomplete="off">
+        <span class="bar"></span>
+    </div>
+
+    <div class="card">
+        <div class="input-group">
+            <i class="fa fa-edit"></i>
+            <input id="nom_produit" type="text" class="form-control" name="nom_produit" required autocomplete="nom_produit" placeholder="Le titre du produit">
+            <span class="bar"></span>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="input-group">
+            <i class="fa fa-money"></i>
+            <input id="prix" type="number" class="form-control" name="prix" required placeholder="Le prix du produit">
+            <span class="bar"></span>
+        </div>
+    </div>
+
+    <textarea name="description" id="" cols="30" rows="10" required></textarea>
+
+    <script src="{% static 'assets/ckeditor/ckeditor.js' %}"></script>
+    <script>
+        CKEDITOR.replace("description");
+    </script>
+
+    <div>
+        <button type="submit"> POSTER </button>
+    </div>
+
+</form>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var roleSelect = document.querySelector('#category');
+            var addressFields = [
+                document.querySelector('#countryField'),
+                document.querySelector('#cityField'),
+                document.querySelector('#districtField')
+            ];
+            var etablissementInputs = document.querySelectorAll('#pays, #ville, #quartier');
+        
+            if (!roleSelect || etablissementInputs.length === 0) {
+                return;
+            }
+        
+            function toggleEtablissementField() {
+                if (roleSelect.value === 'home_garden') {
+                    addressFields.forEach(field => field.style.display = 'block');
+                    etablissementInputs.forEach(input => input.setAttribute('required', 'required'));
+                } else {
+                    addressFields.forEach(field => field.style.display = 'none');
+                    etablissementInputs.forEach(input => input.removeAttribute('required'));
+                }
+            }
+        
+            roleSelect.addEventListener('change', toggleEtablissementField);
+            toggleEtablissementField();
+        });
+        
+    </script>
+{% endblock %}

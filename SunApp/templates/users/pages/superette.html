@@ -1,0 +1,57 @@
+{% extends 'users/layouts/app.html' %}
+
+{% load static %}
+
+{% block contenu %}
+
+<section class="postes">
+
+    <div class="search-form">
+        <form class="search">
+            <div class="form-group">
+                <input type="search" name="poste" id="search-input" placeholder="Rechercher une superette" />
+                <button type="submit">
+                    <i class="fa fa-search"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    {% include 'users/common/slide_banner.html' %}
+
+    <h1 class="section_title"><i class="fa fa-shopping-bag gold"></i> Super Marché </h1>
+
+    {% if query %}
+        <p>{{ superette|length }} résultat{% if superette|length > 1 %}s{% endif %} trouvé{% if superette|length > 1 %}s{% endif %}.</p>
+    {% endif %}
+
+    {% if superette %}
+        <div class="products-grid">
+            {% for superette in superette %}
+                <a href="{% url 'user_detail' user_id=superette.id %}" class="product-card">
+                    {% if superette.profile_image and superette.profile_image.url %}
+                        <img src="{{ superette.profile_image.url }}">
+                        {% else %}
+					    <img src="{% static 'assets/default/user.png' %}">
+                    {% endif %}
+                    <p><i class="fa fa-map-marker gold"></i> {{ superette.pays }}, {{ superette.ville }}, {{ superette.quartier }}</p>
+                    <h4>{{ superette.nom_boutique }}</h4>
+                    <div>
+                        <div class="rating">
+                            <span><i class="fa fa-shopping-bag gold"></i></span>
+                            {{ superette.produits_count }} Produits
+                        </div>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>0 résultat trouvé.</p>
+    {% endif %}
+
+    {% include 'users/common/footer.html' %}
+</section>
+
+{% include 'users/common/sideleft.html' %}
+
+{% endblock %}

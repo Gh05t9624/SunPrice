@@ -1,0 +1,94 @@
+{% load static %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Responsive Profile Page</title>
+	<!-- Font Awesome -->
+	<!-- Box Icone -->
+	<link rel="stylesheet" href="{% static 'assets/icones/font-awesome/css/font-awesome.css' %}">
+	<link rel="stylesheet" href="{% static 'assets/icones/font-awesome/css/font-awesome.min.css' %}">
+
+	<!-- Style -->
+	<link rel="stylesheet" href="{% static 'assets/ressources/styles/profile.css' %}">
+	<link rel="stylesheet" href="{% static 'assets/ressources/styles/lightbox.min.css' %}">
+  </head>
+  <body>
+	<div class="header__wrapper">
+		<header>
+		  {% if user.banner_image and user.banner_image.url %}
+			<a href="{{ user.banner_image.url }}" data-lightbox="mygallery">
+				<img src="{{ user.banner_image.url }}">
+			</a>
+			{% else %}
+				  <img src="{% static 'assets/default/user.png' %}">
+			{% endif %}
+		</header>
+	  <div class="cols__container">
+		<div class="left__col">
+		  <div class="img__container">
+
+			{% if user.profile_image and user.profile_image.url %}
+				<a href="{{ user.profile_image.url }}" data-lightbox="mygallery">
+					<img src="{{ user.profile_image.url }}">
+				</a>
+				{% else %}
+					<img src="{% static 'assets/default/user.png' %}">
+			{% endif %}
+			<span></span>
+		  </div>
+		  <h2>{{ user.nom_boutique }}</h2>
+		  <p>{{ user.email }}</p>
+
+		  <ul class="about">
+			<li><span><i class="fa fa-map-marker gold"></i></span>{{ user.pays }}</li>
+			<li><span><i class="fa fa-map gold"></i></span>{{ user.ville }}</li>
+			<li><span><i class="fa fa-home gold"></i></span>{{ user.quartier }}</li>
+		</ul>
+
+		  <div class="content">
+			<p>
+				Vous pouvez contacter ce boutique via ces boutons en dessous(appel téléphonique, whatsapp, email). En cliquant sur ces boutons, vous les contacterez directement sans intermediaire.
+			</p>
+			<ul>
+				<li> <a class="primary" href="tel:+{{ user.indicatif_pays }} {{ user.number_phone }}"><i class="fa fa-phone"></i></a></li>
+				<li> <a class="success" href="https://wa.me/+{{ user.indicatif_pays }}{{ user.number_phone }}"><i class="fa fa-whatsapp"></i></a></li>
+				<li> <a class="danger" href="mailto:{{ user.email }}"><i class="fa fa-envelope"></i></a></li>
+			</ul>
+		</div>
+		</div>
+		<div class="right__col">
+		  <nav>
+			<ul>
+			  <li><a href="">produits postés</a></li>
+			</ul>
+			<button>Follow</button>
+		  </nav>
+
+		  <div class="photos">
+            {% if products %}
+			{% for product in products %}
+                <a href="#">
+                    <img src="{{ product.image.url }}" alt="Photo" />
+                </a>
+			{% endfor %}
+
+            {% else %}
+                    <center>
+                        <p class="success">Aucune produit disponible pour le moment.</p>
+                    </center>
+            {% endif %}
+		  </div>
+		</div>
+	  </div>
+	</div>
+
+	
+	<script src="{% static 'assets/ressources/scripts/lightbox-plus-jquery.min.js' %}"></script>
+
+  </body>
+</html>

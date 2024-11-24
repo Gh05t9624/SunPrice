@@ -1,0 +1,57 @@
+{% extends 'users/layouts/app.html' %}
+
+{% load static %}
+
+{% block contenu %}
+
+<section class="postes">
+
+    <div class="search-form">
+        <form class="search">
+            <div class="form-group">
+                <input type="search" name="poste" id="search-input" placeholder="Rechercher une supermarket" />
+                <button type="submit">
+                    <i class="fa fa-search"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    {% include 'users/common/slide_banner.html' %}
+
+    <h1 class="section_title"><i class="fa fa-shopping-bag gold"></i> Super Marché </h1>
+
+    {% if query %}
+        <p>{{ supermarket|length }} résultat{% if supermarket|length > 1 %}s{% endif %} trouvé{% if supermarket|length > 1 %}s{% endif %}.</p>
+    {% endif %}
+
+    {% if supermarket %}
+        <div class="products-grid">
+            {% for supermarket in supermarket %}
+                <a href="{% url 'user_detail' user_id=supermarket.id %}" class="product-card">
+                    {% if supermarket.profile_image and supermarket.profile_image.url %}
+                        <img src="{{ supermarket.profile_image.url }}">
+                        {% else %}
+					    <img src="{% static 'assets/default/user.png' %}">
+                    {% endif %}
+                    <p><i class="fa fa-map-marker gold"></i> {{ supermarket.pays }}, {{ supermarket.ville }}, {{ supermarket.quartier }}</p>
+                    <h4>{{ supermarket.nom_boutique }}</h4>
+                    <div>
+                        <div class="rating">
+                            <span><i class="fa fa-shopping-bag gold"></i></span>
+                            {{ supermarket.produits_count }} Produits
+                        </div>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>0 résultat trouvé.</p>
+    {% endif %}
+
+    {% include 'users/common/footer.html' %}
+</section>
+
+{% include 'users/common/sideleft.html' %}
+
+{% endblock %}

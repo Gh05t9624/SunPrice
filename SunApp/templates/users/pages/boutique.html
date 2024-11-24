@@ -1,0 +1,58 @@
+{% extends 'users/layouts/app.html' %}
+
+{% load static %}
+
+{% block contenu %}
+
+<section class="postes">
+
+    <div class="search-form">
+        <form class="search">
+            <div class="form-group">
+                <input type="search" name="poste" id="search-input" placeholder="Rechercher une boutique" />
+                <button type="submit">
+                    <i class="fa fa-search"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    {% include 'users/common/slide_banner.html' %}
+
+    <h1 class="section_title"><i class="fa fa-shopping-bag gold"></i> Boutiques</h1>
+
+    {% if query %}
+        <p>{{ boutiques|length }} résultat{% if boutiques|length > 1 %}s{% endif %} trouvé{% if boutiques|length > 1 %}s{% endif %}.</p>
+    {% endif %}
+
+    {% if boutiques %}
+        <div class="products-grid">
+            {% for boutique in boutiques %}
+                <a href="{% url 'user_detail' user_id=boutique.id %}" class="product-card">
+                    {% if boutique.profile_image and boutique.profile_image.url %}
+                        <img src="{{ boutique.profile_image.url }}">
+                        {% else %}
+					    <img src="{% static 'assets/default/user.png' %}">
+                    {% endif %}
+                    <p><i class="fa fa-map-marker gold"></i> {{ boutique.pays }}, {{ boutique.ville }}, {{ boutique.quartier }}</p>
+                    <h4>{{ boutique.nom_boutique }}</h4>
+                    <div>
+                        <div class="rating">
+                            <span><i class="fa fa-shopping-bag gold"></i></span>
+                            {{ boutique.produits_count }} Produits
+                        </div>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>0 résultat trouvé.</p>
+    {% endif %}
+
+    {% include 'users/common/footer.html' %}
+
+</section>
+
+{% include 'users/common/sideleft.html' %}
+
+{% endblock %}

@@ -1,0 +1,44 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link type="images/jpg" rel="icon" href="{% static 'assets/logo/sunprice.png' %}">
+
+    <!-- Box Icone -->
+    <link rel="stylesheet" href="{% static 'assets/icones/font-awesome/css/font-awesome.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/icones/font-awesome/css/font-awesome.min.css' %}">
+
+    <!-- Style -->
+    <title> SunPrice </title>
+</head>
+<body>
+
+    <h1>Mes Notifications</h1>
+    <ul id="notification-list">
+        {% for notification in notifications %}
+            <li>{{ notification.timestamp }} - {{ notification.message }}</li>
+        {% empty %}
+            <li>Aucune notification</li>
+        {% endfor %}
+    </ul>
+
+    <form action="{% url 'mark_notifications_as_read' %}" method="post">
+        {% csrf_token %}
+        <button type="submit">Marquer toutes comme lues</button>
+    </form>
+
+    <script src="{% static 'assets/algos/scripts/secrete.js' %}"></script>
+    <script>
+        const socket = new WebSocket('ws://localhost:8000/ws/notifications/');
+
+        socket.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+            alert(data.message);  // Ou utilisez une autre méthode pour afficher la notification
+        };
+
+    </script>
+</body>
+</html>

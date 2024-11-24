@@ -1,0 +1,225 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link type="images/jpg" rel="icon" href="{% static 'assets/logo/sunprice.png' %}">
+
+    <!-- Box Icone -->
+    <link rel="stylesheet" href="{% static 'assets/icones/font-awesome/css/font-awesome.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/icones/font-awesome/css/font-awesome.min.css' %}">
+
+    <!-- Style -->
+    <link rel="stylesheet" href="{% static 'assets/ressources/styles/header.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/ressources/styles/postes.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/ressources/styles/sidebarLeft.css' %}">
+
+    <title> SunPrice </title>
+</head>
+<body>
+
+    <!-- ======== Header ======== -->
+    <header class="header" id="header">
+        <nav class="nav cont">
+            <a href="{% url 'notifications' %}" class="nav_logo">
+                <!-- <img src="{% static 'assets/logo/sunprice.png' %}"> -->
+                 <h1>SUNPRICE</h1>
+                <div class="pulse" style="display:none;">
+                    <i class="fa fa-bell white notification"></i>
+                </div>
+                <div class="beat" style="display:block;">
+                    <i class="fa fa-bell gold notification"></i>
+                </div>
+            </a>
+
+            <div class="nav_menu" id="nav-menu">
+                {% with request.resolver_match.url_name as url_name %}
+                    <ul class="nav_list">
+                        <li class="nav_item">
+                            <a href="home" class="nav_link {% if url_name == 'home' %} active-link {% endif %}">
+                                <i class="fa fa-product-hunt nav_icon"></i>
+                                <span class="nav_name">Produits</span>
+                            </a>
+                        </li>
+
+                        <li class="nav_item">
+                            <a href="boutique" class="nav_link {% if url_name == 'boutique' %} active-link {% endif %}">
+                                <i class="fa fa-shopping-bag nav_icon"></i>
+                                <span class="nav_name">Boutiques</span>
+                            </a>
+                        </li>
+
+                        <li class="nav_item">
+                            <a href="super_marcher" class="nav_link {% if url_name == 'super_marcher' %} active-link {% endif %}">
+                                <i class="fa fa-shopping-cart nav_icon"></i>
+                                <span class="nav_name">Super-Marchés</span>
+                            </a>
+                        </li>
+
+                        <li class="nav_item">
+                            <a href="superette" class="nav_link {% if url_name == 'superette' %} active-link {% endif %}">
+                                <i class="fa fa-shopping-basket nav_icon"></i>
+                                <span class="nav_name">Superettes</span>
+                            </a>
+                        </li>
+
+                        <li class="nav_item">
+                            <a href="particulier" class="nav_link {% if url_name == 'particulier' %} active-link {% endif %}">
+                                <i class="fa fa-handshake-o nav_icon"></i>
+                                <span class="nav_name">Particuliers</span>
+                            </a>
+                        </li>
+
+                        <li class="nav_item">
+                            <a href="station_service" class="nav_link {% if url_name == 'station_service' %} active-link {% endif %}">
+                                <i class="fa fa-car nav_icon"></i>
+                                <span class="nav_name">Stations-Services</span>
+                            </a>
+                        </li>
+
+                        <li class="nav_item">
+                            <a href="facture_users" class="nav_link {% if url_name == 'facture_users' %} active-link {% endif %}">
+                                <i class="fa fa-list-alt nav_icon"></i>
+                                <span class="nav_name">Factures</span>
+                            </a>
+                        </li>
+                    </ul>
+                {% endwith %}
+            </div>
+
+            <img src="{% static 'assets/delete/images/pic-4.png' %}" class="nav_img" onclick="toggle()">
+            <ul class="profil-dropdown-list">
+                {% if request.user.rôle != 'acheteur' %}
+                    <li class="profil-dropdown-list-item">
+                        <a href="product">
+                            <i class="fa fa-product-hunt"></i>
+                            Poster un Produit
+                        </a>
+                    </li>
+                {% endif %}
+
+                {% if request.user.rôle == 'acheteur' %}
+                    <li class="profil-dropdown-list-item">
+                        <a href="facture">
+                            <i class="fa fa-list-alt"></i>
+                            Votre Facture
+                        </a>
+                    </li>
+                {% endif %}
+
+                <li class="profil-dropdown-list-item">
+                    <a href="#">
+                        <i class="fa fa-user"></i>
+                        Votre Profil
+                    </a>
+                </li>
+
+                <li class="profil-dropdown-list-item">
+                    <a href="#">
+                        <i class="fa fa-map"></i>
+                        Votre Localisation
+                    </a>
+                </li>
+
+                <li class="profil-dropdown-list-item">
+                    <a href="#">
+                        <i class="fa fa-map-marker"></i>
+                        Changer de Localité
+                    </a>
+                </li>
+
+                <li class="profil-dropdown-list-item">
+                    <a href="#">
+                        <i class="fa fa-sliders"></i>
+                        Paramétres
+                    </a>
+                </li>
+
+                <li class="profil-dropdown-list-item">
+                    <a href="#">
+                        <i class="fa fa-question-circle"></i>
+                        Aide Support
+                    </a>
+                </li>
+
+                <hr>
+
+                <li class="profil-dropdown-list-item">
+                    <a href="{% url 'logout' %}">
+                        <i class="fa fa-sign-out"></i>
+                        Déconnexion
+                    </a>
+                </li>
+
+            </ul>
+        </nav>
+    </header>
+    
+
+    <main>
+        {% block contenu %}
+
+        {% endblock %}
+    </main>
+
+    <script src="{% static 'assets/ressources/scripts/header.js' %}"></script>
+    <script src="{% static 'assets/formulaires/scripts/views.js' %}"></script>
+    <script src="{% static 'assets/ressources/scripts/poste.js' %}"></script>
+    <!-- <script src="{% static 'assets/algos/scripts/secrete.js' %}"></script> -->
+    <script src="{% static 'assets/ressources/scripts/Retour.js' %}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+    <script>
+      
+        // creating a function and calling it in every seconds
+        setInterval(()=>{
+      
+          let date = new Date(),
+          hour = date.getHours(),
+          min = date.getMinutes(),
+          sec = date.getSeconds();
+      
+          let d;
+          d = hour < 12 ? "AM" : "PM"; //if hour is smaller than 12, than its value will be AM else its value will be pm
+          hour = hour > 24 ? hour - 24 : hour; //if hour value is greater than 12 than 12 will subtracted ( by doing this we will get value till 12 not 13,14 or 24 )
+          hour = hour == 0 ? hour = 12 : hour; // if hour value is  0 than it value will be 12
+      
+          // adding 0 to the front of all the value if they will less than 10
+          hour = hour < 10 ? "0" + hour : hour;
+          min = min < 10 ? "0" + min : min;
+          sec = sec < 10 ? "0" + sec : sec;
+      
+          document.querySelector(".hour_num").innerText = hour;
+          document.querySelector(".min_num").innerText = min;
+          document.querySelector(".sec_num").innerText = sec;
+          document.querySelector(".am_pm").innerText = d;
+      
+        }, 1000); // 1000 milliseconds = 1s
+      
+
+        function checkForNotifications() {
+            $.ajax({
+                url: "{% url 'check_notifications' %}",
+                method: "GET",
+                success: function(data) {
+                    if (data.has_new_notifications) {
+                        $('.nav_logo .pulse').show();
+                        $('.nav_logo .beat').hide();
+                    } else {
+                        $('.nav_logo .pulse').hide();
+                        $('.nav_logo .beat').show();
+                    }
+                }
+            });
+        }
+    
+        // Vérifier toutes les 5 secondes
+        setInterval(checkForNotifications, 5000);
+
+    </script>
+
+</body>
+</html>

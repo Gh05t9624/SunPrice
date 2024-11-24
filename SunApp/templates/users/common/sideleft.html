@@ -1,0 +1,80 @@
+{% load static %}
+<section class="sidebar-left-actu">
+    <div class="sidebarLeft-actu">
+        <div class="sidebar-profile-box">
+            <img src="{% static "assets/delete/banner/back1.jpg" %}" class="couverture">
+            
+            <div class="sidebar-profile-info">
+                <img src="{% static "assets/delete/banner/back4.jpg" %}">
+                <span class="editer">
+                    <a href="#" class="fa fa-camera"></a>
+                </span>
+
+                <h1>
+                    {{ user.first_name }} {{ user.last_name }}
+                </h1>
+
+                <ul>
+                    <li> {{ user.pays }} ({{ user.ville }}) <span class="fa fa-map-marker primary"></span></li>
+                    <li>{{ user.quartier }} <span class="fa fa-home primary"></span></li>
+                    <li>{{ user.email }} <span class="fa fa-envelope primary"></span></li>
+                    <li>+{{ user.indicatif_pays }} {{ user.number_phone }} <span class="fa fa-phone primary"></span></li>
+                </ul>
+
+            </div>
+        </div>
+
+        <div class="sidebar-profile-box">
+            <div class="sidebar-share-profile">
+                <h2>Boutons:</h2>
+
+                <div class="sidebar-profile-info">
+                    <ul>
+                        {% if request.user.rôle != 'acheteur' %}
+                            <li> <a href="product">Poster un produit</a> <span class="fa fa-product-hunt primary"></span></li>
+                            <li> <a href="#">Vos Produits</a> <span class="fa fa-product-hunt primary"></span></li>
+                        {% endif %}
+                        {% if request.user.rôle == 'acheteur' %}
+                            <li> <a href="facture">Vorte Facture</a> <span class="fa fa-list-alt primary"></span></li>
+                        {% endif %}
+                        <li> <a href="#">Votre Localisation</a> <span class="fa fa-map primary"></span></li>
+                        <li> <a href="#">Paramétres</a> <span class="fa fa-sliders primary"></span></li>
+                        <li> <a href="#">Aide Support</a> <span class="fa fa-question-circle primary"></span></li>
+                        <li> <a href="{% url 'logout' %}">Déconnexion</a> <span class="fa fa-sign-out primary"></span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="sidebar-profile-box">
+            <div class="sidebar-share-profile">
+                <h2>Horloge:</h2>
+
+                <div class="time">
+                    <div class="time-colon">
+                        <div class="time-text">
+                          <span class="num hour_num">08</span>
+                          <span class="text primary">Hours</span>
+                        </div>
+                        <span class="colon">:</span>
+                        <div class="time-colon">
+                            <div class="time-text">
+                            <span class="num min_num">45</span>
+                            <span class="text primary">Minutes</span>
+                            </div>
+                            <span class="colon">:</span>
+                        </div>
+                        <div class="time-colon">
+                            <div class="time-text">
+                            <span class="num sec_num">06</span>
+                            <span class="text primary">Seconds</span>
+                            </div>
+                            <span class="am_pm primary">AM</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+

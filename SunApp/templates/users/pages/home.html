@@ -1,0 +1,500 @@
+{% extends 'users/layouts/app.html' %}
+
+{% load static %}
+
+{% block contenu %}
+
+    <section class="postes">
+
+        <div class="search-form">
+            <form class="search">
+                <div class="form-group">
+                    <input type="search" name="poste" id="search-input" placeholder="Rechercher un produit dans toutes vendeurs"/>
+                    <button type="submit">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="tab-nav-bar">
+            <h1>Les catégories de produits</h1>
+            <div class="tab-navigation">
+                <i class="fa fa-angle-left left-btn"></i>
+                <i class="fa fa-angle-right right-btn"></i>
+                <ul class="tab-menu">
+                    <li class="tab-btn active">Tout</li>
+                    <li class="tab-btn">Électronique</li>
+                    <li class="tab-btn">Mode et Vêtements</li>
+                    <li class="tab-btn">Maison et Jardin</li>
+                    <li class="tab-btn">Beauté et Santé</li>
+                    <li class="tab-btn">Alimentation et Boissons</li>
+                    <li class="tab-btn">Sport et Loisirs</li>
+                    <li class="tab-btn">Livres et Médias</li>
+                    <li class="tab-btn">Jouets et Enfants</li>
+                    <li class="tab-btn">Automobile et Outils</li>
+                    <li class="tab-btn">Animaux</li>
+                    <li class="tab-btn">Services et Abonnements</li>
+                    <li class="tab-btn">Offres spéciales / Promotions</li>
+                </ul>
+            </div>
+        </div>
+
+        {% include 'users/common/slide_banner.html' %}
+
+        <h1 class="section_title"><i class="fa fa-product-hunt gold"></i> Produits</h1>
+
+        {% if query %}
+            <div class="tarifs">
+                <a href="#" class="valeur-price moins">
+                    <h1><i class="fa fa-arrow-down write"></i> {{ cheaper_products|length }} moins Chers</h1>
+                    {% if cheaper_products %}
+                    <b class="fa fa-money"><span> {{ cheaper_products.0.prix }} FCFA </span></b>
+                    {% endif %}
+                </a>
+                <a href="#" class="valeur-price plus">
+                    <h1><i class="fa fa-arrow-up write"></i> {{ expensive_products|length }} plus Chers</h1>
+                    {% if expensive_products %}
+                    {% with last_expensive_product=expensive_products|last %}
+                        <b class="fa fa-money"><span> {{ last_expensive_product.prix }} FCFA </span></b>
+                    {% endwith %}
+                    {% endif %}
+                </a>
+            </div>
+        {% endif %}
+
+        <div class="gallery">
+            {% include 'PUB/partenaire.html' %}
+            <div class="img-content active">
+                <h1>Tous les produits</h1>
+                <ul class="images">
+                    {% if products %}
+                        {% for product in products %}
+                            <li class="card filter">
+                                <a href="{% url 'product_detail' product_id=product.id %}"><img src="{{ product.image.url }}"></a>
+                                <div class="price">
+                                    <h3>{{ product.prix }} <br> FCFA</h3>
+                                </div>
+                                <div class="details">
+                                    <div class="title">
+                                        <h1>{{ product.title }}</h1>
+                                        <p>
+                                            <em><span class="disparait">Mis en vente depuis le</span> {{ product.date_creation_post|date:"d F Y à H:i" }}</em>
+                                        </p>
+                                    </div>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    {% else %}
+                        <h1 class="section_title"><i class="fa fa-product-hunt gold"></i>0 Produits trouvé</h1>
+                    {% endif %}
+                </ul>
+            </div>
+
+
+            <div class="img-content">
+                <h1>Produits Électroniques</h1>
+                <ul class="images">
+                    {% if products %}
+                        {% for product in products %}
+                            {% if product.category == 'electronics' %}
+                                <li class="card filter">
+                                    <a href="{% url 'product_detail' product_id=product.id %}">
+                                        <img src="{{ product.image.url }}" alt="{{ product.title }}">
+                                    </a>
+                                    <div class="price">
+                                        <h3>{{ product.prix }} <br> FCFA</h3>
+                                    </div>
+                                    <div class="details">
+                                        <div class="title">
+                                            <h1>{{ product.title }}</h1>
+                                            <p>
+                                                <em><span class="disparait">Mis en vente depuis le</span> 
+                                                {{ product.date_creation_post|date:"d F Y à H:i" }}</em>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <h1 class="section_title">
+                            <i class="fa fa-product-hunt gold"></i> 0 Produits trouvés
+                        </h1>
+                    {% endif %}
+                </ul>
+            </div>
+
+            <div class="img-content">
+                <h1>Mode et Vêtements</h1>
+                <ul class="images">
+                    {% if products %}
+                        {% for product in products %}
+                            {% if product.category == 'fashion' %}
+                                <li class="card filter">
+                                    <a href="{% url 'product_detail' product_id=product.id %}">
+                                        <img src="{{ product.image.url }}" alt="{{ product.title }}">
+                                    </a>
+                                    <div class="price">
+                                        <h3>{{ product.prix }} <br> FCFA</h3>
+                                    </div>
+                                    <div class="details">
+                                        <div class="title">
+                                            <h1>{{ product.title }}</h1>
+                                            <p>
+                                                <em><span class="disparait">Mis en vente depuis le</span> 
+                                                {{ product.date_creation_post|date:"d F Y à H:i" }}</em>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <h1 class="section_title">
+                            <i class="fa fa-product-hunt gold"></i> 0 Produits trouvés
+                        </h1>
+                    {% endif %}
+                </ul>
+            </div>
+
+            <div class="img-content">
+                <h1>Maison et Jardin</h1>
+                <ul class="images">
+                    {% if products %}
+                        {% for product in products %}
+                            {% if product.category == 'home_garden' %}
+                                <li class="card filter">
+                                    <a href="{% url 'product_detail' product_id=product.id %}">
+                                        <img src="{{ product.image.url }}" alt="{{ product.title }}">
+                                    </a>
+                                    <div class="price">
+                                        <h3>{{ product.prix }} <br> FCFA</h3>
+                                    </div>
+                                    <div class="details">
+                                        <div class="title">
+                                            <h1>{{ product.title }}</h1>
+                                            <p>
+                                                <em><span class="disparait">Mis en vente depuis le</span> 
+                                                {{ product.date_creation_post|date:"d F Y à H:i" }}</em>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <h1 class="section_title">
+                            <i class="fa fa-product-hunt gold"></i> 0 Produits trouvés
+                        </h1>
+                    {% endif %}
+                </ul>
+            </div>
+
+            <div class="img-content">
+                <h1>Beauté et Santé</h1>
+                <ul class="images">
+                    {% if products %}
+                        {% for product in products %}
+                            {% if product.category == 'beauty_health' %}
+                                <li class="card filter">
+                                    <a href="{% url 'product_detail' product_id=product.id %}">
+                                        <img src="{{ product.image.url }}" alt="{{ product.title }}">
+                                    </a>
+                                    <div class="price">
+                                        <h3>{{ product.prix }} <br> FCFA</h3>
+                                    </div>
+                                    <div class="details">
+                                        <div class="title">
+                                            <h1>{{ product.title }}</h1>
+                                            <p>
+                                                <em><span class="disparait">Mis en vente depuis le</span> 
+                                                {{ product.date_creation_post|date:"d F Y à H:i" }}</em>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <h1 class="section_title">
+                            <i class="fa fa-product-hunt gold"></i> 0 Produits trouvés
+                        </h1>
+                    {% endif %}
+                </ul>
+            </div>
+            
+            <div class="img-content">
+                <h1>Alimentation et Boissons</h1>
+                <ul class="images">
+                    {% if products %}
+                        {% for product in products %}
+                            {% if product.category == 'food_drink' %}
+                                <li class="card filter">
+                                    <a href="{% url 'product_detail' product_id=product.id %}">
+                                        <img src="{{ product.image.url }}" alt="{{ product.title }}">
+                                    </a>
+                                    <div class="price">
+                                        <h3>{{ product.prix }} <br> FCFA</h3>
+                                    </div>
+                                    <div class="details">
+                                        <div class="title">
+                                            <h1>{{ product.title }}</h1>
+                                            <p>
+                                                <em><span class="disparait">Mis en vente depuis le</span> 
+                                                {{ product.date_creation_post|date:"d F Y à H:i" }}</em>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <h1 class="section_title">
+                            <i class="fa fa-product-hunt gold"></i> 0 Produits trouvés
+                        </h1>
+                    {% endif %}
+                </ul>
+            </div>
+
+            <div class="img-content">
+                <h1>Sport et Loisirs</h1>
+                <ul class="images">
+                    {% if products %}
+                        {% for product in products %}
+                            {% if product.category == 'sports_leisure' %}
+                                <li class="card filter">
+                                    <a href="{% url 'product_detail' product_id=product.id %}">
+                                        <img src="{{ product.image.url }}" alt="{{ product.title }}">
+                                    </a>
+                                    <div class="price">
+                                        <h3>{{ product.prix }} <br> FCFA</h3>
+                                    </div>
+                                    <div class="details">
+                                        <div class="title">
+                                            <h1>{{ product.title }}</h1>
+                                            <p>
+                                                <em><span class="disparait">Mis en vente depuis le</span> 
+                                                {{ product.date_creation_post|date:"d F Y à H:i" }}</em>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <h1 class="section_title">
+                            <i class="fa fa-product-hunt gold"></i> 0 Produits trouvés
+                        </h1>
+                    {% endif %}
+                </ul>
+            </div>
+
+            <div class="img-content">
+                <h1>Livres et Médias</h1>
+                <ul class="images">
+                    {% if products %}
+                        {% for product in products %}
+                            {% if product.category == 'books_media' %}
+                                <li class="card filter">
+                                    <a href="{% url 'product_detail' product_id=product.id %}">
+                                        <img src="{{ product.image.url }}" alt="{{ product.title }}">
+                                    </a>
+                                    <div class="price">
+                                        <h3>{{ product.prix }} <br> FCFA</h3>
+                                    </div>
+                                    <div class="details">
+                                        <div class="title">
+                                            <h1>{{ product.title }}</h1>
+                                            <p>
+                                                <em><span class="disparait">Mis en vente depuis le</span> 
+                                                {{ product.date_creation_post|date:"d F Y à H:i" }}</em>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <h1 class="section_title">
+                            <i class="fa fa-product-hunt gold"></i> 0 Produits trouvés
+                        </h1>
+                    {% endif %}
+                </ul>
+            </div>
+
+            <div class="img-content">
+                <h1>Jouets et Enfants</h1>
+                <ul class="images">
+                    {% if products %}
+                        {% for product in products %}
+                            {% if product.category == 'toys_kids' %}
+                                <li class="card filter">
+                                    <a href="{% url 'product_detail' product_id=product.id %}">
+                                        <img src="{{ product.image.url }}" alt="{{ product.title }}">
+                                    </a>
+                                    <div class="price">
+                                        <h3>{{ product.prix }} <br> FCFA</h3>
+                                    </div>
+                                    <div class="details">
+                                        <div class="title">
+                                            <h1>{{ product.title }}</h1>
+                                            <p>
+                                                <em><span class="disparait">Mis en vente depuis le</span> 
+                                                {{ product.date_creation_post|date:"d F Y à H:i" }}</em>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <h1 class="section_title">
+                            <i class="fa fa-product-hunt gold"></i> 0 Produits trouvés
+                        </h1>
+                    {% endif %}
+                </ul>
+            </div>
+
+            <div class="img-content">
+                <h1>Automobile et Outils</h1>
+                <ul class="images">
+                    {% if products %}
+                        {% for product in products %}
+                            {% if product.category == 'automotive_tools' %}
+                                <li class="card filter">
+                                    <a href="{% url 'product_detail' product_id=product.id %}">
+                                        <img src="{{ product.image.url }}" alt="{{ product.title }}">
+                                    </a>
+                                    <div class="price">
+                                        <h3>{{ product.prix }} <br> FCFA</h3>
+                                    </div>
+                                    <div class="details">
+                                        <div class="title">
+                                            <h1>{{ product.title }}</h1>
+                                            <p>
+                                                <em><span class="disparait">Mis en vente depuis le</span> 
+                                                {{ product.date_creation_post|date:"d F Y à H:i" }}</em>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <h1 class="section_title">
+                            <i class="fa fa-product-hunt gold"></i> 0 Produits trouvés
+                        </h1>
+                    {% endif %}
+                </ul>
+            </div>
+
+            <div class="img-content">
+                <h1>Animaux</h1>
+                <ul class="images">
+                    {% if products %}
+                        {% for product in products %}
+                            {% if product.category == 'pets' %}
+                                <li class="card filter">
+                                    <a href="{% url 'product_detail' product_id=product.id %}">
+                                        <img src="{{ product.image.url }}" alt="{{ product.title }}">
+                                    </a>
+                                    <div class="price">
+                                        <h3>{{ product.prix }} <br> FCFA</h3>
+                                    </div>
+                                    <div class="details">
+                                        <div class="title">
+                                            <h1>{{ product.title }}</h1>
+                                            <p>
+                                                <em><span class="disparait">Mis en vente depuis le</span> 
+                                                {{ product.date_creation_post|date:"d F Y à H:i" }}</em>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <h1 class="section_title">
+                            <i class="fa fa-product-hunt gold"></i> 0 Produits trouvés
+                        </h1>
+                    {% endif %}
+                </ul>
+            </div>
+
+            <div class="img-content">
+                <h1>Services et Abonnements</h1>
+                <ul class="images">
+                    {% if products %}
+                        {% for product in products %}
+                            {% if product.category == 'services' %}
+                                <li class="card filter">
+                                    <a href="{% url 'product_detail' product_id=product.id %}">
+                                        <img src="{{ product.image.url }}" alt="{{ product.title }}">
+                                    </a>
+                                    <div class="price">
+                                        <h3>{{ product.prix }} <br> FCFA</h3>
+                                    </div>
+                                    <div class="details">
+                                        <div class="title">
+                                            <h1>{{ product.title }}</h1>
+                                            <p>
+                                                <em><span class="disparait">Mis en vente depuis le</span> 
+                                                {{ product.date_creation_post|date:"d F Y à H:i" }}</em>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <h1 class="section_title">
+                            <i class="fa fa-product-hunt gold"></i> 0 Produits trouvés
+                        </h1>
+                    {% endif %}
+                </ul>
+            </div>
+
+            <div class="img-content">
+                <h1>Offres spéciales / Promotions</h1>
+                <ul class="images">
+                    {% if products %}
+                        {% for product in products %}
+                            {% if product.category == 'special_offers' %}
+                                <li class="card filter">
+                                    <a href="{% url 'product_detail' product_id=product.id %}">
+                                        <img src="{{ product.image.url }}" alt="{{ product.title }}">
+                                    </a>
+                                    <div class="price">
+                                        <h3>{{ product.prix }} <br> FCFA</h3>
+                                    </div>
+                                    <div class="details">
+                                        <div class="title">
+                                            <h1>{{ product.title }}</h1>
+                                            <p>
+                                                <em><span class="disparait">Mis en vente depuis le</span> 
+                                                {{ product.date_creation_post|date:"d F Y à H:i" }}</em>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <h1 class="section_title">
+                            <i class="fa fa-product-hunt gold"></i> 0 Produits trouvés
+                        </h1>
+                    {% endif %}
+                </ul>
+            </div>
+            
+        </div>
+
+        {% include 'users/common/footer.html' %}
+
+    </section>
+
+
+    {% include 'users/common/sideleft.html' %}
+
+{% endblock %}
