@@ -323,7 +323,7 @@ def particulier(request):
     particulier = sorted(particulier, key=sorting_key)
     return render(request, 'users/pages/particulier.html', {'particulier': particulier, 'query': query})
 
-def station_service(request):
+def imobilier(request):
     # Fonction pour normaliser les chaînes de caractères (insensible aux majuscules, minuscules, accents)
     def normalize_string(s):
         return unicodedata.normalize('NFKD', s).encode('ASCII', 'ignore').decode('ASCII').lower()
@@ -337,35 +337,35 @@ def station_service(request):
     user_quartier = normalize_string(user.quartier or '')
     
     # Filtrer les utilisateurs ayant le rôle "boutiques"
-    station = CustomUser.objects.filter(rôle='station')
+    imobilier = CustomUser.objects.filter(rôle='imobilier')
 
     # Vérifier si une recherche par nom d'utilisateur est effectuée
     query = request.GET.get('poste', '')
     if query:
-        station = station.filter(username__icontains=query)
+        imobilier = imobilier.filter(username__icontains=query)
 
     
-    def normalize_station(station):
+    def normalize_station(imobilier):
         return (
-            normalize_string(station.pays or ''),
-            normalize_string(station.ville or ''),
-            normalize_string(station.quartier or '')
+            normalize_string(imobilier.pays or ''),
+            normalize_string(imobilier.ville or ''),
+            normalize_string(imobilier.quartier or '')
         )
     
     
-    def sorting_key(station):
-        station_pays, station_ville, station_quartier = normalize_station(station)
+    def sorting_key(imobilier):
+        imobilier_pays, imobilier_ville, imobilier_quartier = normalize_station(imobilier)
 
         # Création de la clé de tri basée sur les critères définis
         return (
-            not (station_pays == user_pays and station_ville == user_ville and station_quartier == user_quartier),
-            not (station_pays == user_pays and station_ville == user_ville),
-            not (station_pays == user_pays)
+            not (imobilier_pays == user_pays and imobilier_ville == user_ville and imobilier_quartier == user_quartier),
+            not (imobilier_pays == user_pays and imobilier_ville == user_ville),
+            not (imobilier_pays == user_pays)
         )
     
     
-    station = sorted(station, key=sorting_key)
-    return render(request, 'users/pages/station_service.html', {'station': station, 'query': query})
+    imobilier = sorted(imobilier, key=sorting_key)
+    return render(request, 'users/pages/imobilier.html', {'imobilier': imobilier, 'query': query})
 
 def facture_users(request):
     # Fonction pour normaliser les chaînes de caractères (insensible aux majuscules, minuscules, accents)

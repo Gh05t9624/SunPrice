@@ -4,54 +4,88 @@
 
 {% block contenu %}
 
-<section class="postes">
+<header class="hero" id="search">
+    <form class="hero-content">
+        <h2>Découvrez les meilleurs prix près de chez vous</h2>
+        <div class="search-bar">
+            <input type="search" name="poste" id="search-input" placeholder="Rechercher une particulier...">
+            <button class="search-btn-search" type="submit">Rechercher</button>
+        </div>
+    </form>
+</header>
 
-    <div class="search-form">
-        <form class="search">
-            <div class="form-group">
-                <input type="search" name="poste" id="search-input" placeholder="Rechercher une particulier" />
-                <button type="submit">
-                    <i class="fa fa-search"></i>
-                </button>
+ <!-- Slider Section -->
+<section class="slider-section">
+    <div class="slider">
+        <a href="#" class="slide">
+            <img src="{% static 'assets/default/image1.jpeg' %}" alt="Tech Image 1" class="slide-image">
+            <div class="slide-content">
+                <h3>Découvrez nos offres</h3>
+                <p>Les meilleurs prix près de chez vous</p>
             </div>
-        </form>
+        </a>
+        <a href="#" class="slide">
+            <img src="{% static 'assets/default/image2.jpeg' %}" alt="Tech Image 2" class="slide-image">
+            <div class="slide-content">
+                <h3>Produits locaux</h3>
+                <p>Soutenez vos commerces de proximité</p>
+            </div>
+        </a>
+        <a href="#" class="slide">
+            <img src="{% static 'assets/default/image2.jpeg' %}" alt="Tech Image 3" class="slide-image">
+            <div class="slide-content">
+                <h3>Prix compétitifs</h3>
+                <p>Comparez et économisez</p>
+            </div>
+        </a>
     </div>
+    <button class="slider-btn prev">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+    </button>
+    <button class="slider-btn next">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+    </button>
+</section>
 
-    {% include 'users/common/slide_banner.html' %}
-
-    <h1 class="section_title"><i class="fa fa-shopping-bag gold"></i> Super Marché </h1>
-
+<main class="main-content">
     {% if query %}
         <p>{{ particulier|length }} résultat{% if particulier|length > 1 %}s{% endif %} trouvé{% if particulier|length > 1 %}s{% endif %}.</p>
     {% endif %}
-
-    {% if particulier %}
-        <div class="products-grid">
-            {% for particulier in particulier %}
-                <a href="{% url 'user_detail' user_id=particulier.id %}" class="product-card">
-                    {% if particulier.profile_image and particulier.profile_image.url %}
-                        <img src="{{ particulier.profile_image.url }}">
-                        {% else %}
-					    <img src="{% static 'assets/default/user.png' %}">
-                    {% endif %}
-                    <p><i class="fa fa-map-marker gold"></i> {{ particulier.pays }}, {{ particulier.ville }}, {{ particulier.quartier }}</p>
-                    <h4>{{ particulier.nom_boutique }}</h4>
-                    <div>
-                        <div class="rating">
-                            <span><i class="fa fa-shopping-bag gold"></i></span>
-                            {{ particulier.produits_count }} Produits
+    <section class="vendors-section">
+        {% if particulier %}
+            <h2 class="section-title">Les Particuliers</h2>
+            <div class="vendors-grid">
+                {% for particulier in particulier %}
+                    <a href="{% url 'user_detail' user_id=particulier.id %}" class="vendor-card">
+                        <div class="vendor-banner">
+                            {% if particulier.banner_image and particulier.banner_image.url %}
+                                    <img src="{{ particulier.banner_image.url }}" class="banner-image">
+                                {% else %}
+                                    <img src="{% static 'assets/default/user.png' %}" class="banner-image">
+                            {% endif %}
                         </div>
-                    </div>
-                </a>
-            {% endfor %}
-        </div>
-    {% else %}
-        <p>0 résultat trouvé.</p>
-    {% endif %}
-
-    {% include 'users/common/footer.html' %}
-</section>
-
-{% include 'users/common/sideleft.html' %}
+                        <div class="vendor-profile">
+                            {% if particulier.profile_image and particulier.profile_image.url %}
+                                    <img src="{{ particulier.profile_image.url }}" class="profile-image">
+                                {% else %}
+                                    <img src="{% static 'assets/default/user.png' %}" class="profile-image">
+                            {% endif %}
+                            <div class="vendor-info">
+                                <h3 class="vendor-name">{{ particulier.nom_particulier }}</h3>
+                                <span class="vendor-badge vendor-badge-particulier">{{ particulier.pays }}, {{ particulier.ville }}, {{ particulier.quartier }}</span>
+                            </div>
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+            {% else %}
+                <h1 class="section_title">0 trouvé</h1>
+        {% endif %}
+    </section>
+</main>
 
 {% endblock %}

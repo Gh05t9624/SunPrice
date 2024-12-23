@@ -4,7 +4,7 @@ from django.urls import path, include
 from SunApp.views import check_notifications, log_in, mark_notifications_as_read, notifications_view, register, log_out, profile
 
 # ========== Les Pages Users =======================
-from SunApp.views import home, boutique, super_marcher, superette, particulier, station_service, user_map_view, facture_users
+from SunApp.views import home, boutique, super_marcher, superette, particulier, imobilier, user_map_view, facture_users
 
 # ========== Les Pages Notifications =======================
 from SunApp.views import notifications
@@ -35,7 +35,7 @@ urlpatterns = [
     path('super_marcher', super_marcher, name = 'super_marcher'),
     path('superette', superette, name = 'superette'),
     path('particulier', particulier, name = 'particulier'),
-    path('station_service', station_service, name = 'station_service'),
+    path('imobilier', imobilier, name = 'imobilier'),
     path('facture_users', facture_users, name = 'facture_users'),
     
     # ========== Pages de Notifications ======================

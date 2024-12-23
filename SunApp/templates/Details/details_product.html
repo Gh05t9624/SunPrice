@@ -2,104 +2,118 @@
 
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-	<meta charset="UTF-8" />
-	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>Responsive Profile Page</title>
-	<!-- Font Awesome -->
-	<!-- Box Icone -->
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link type="images/jpg" rel="icon" href="{% static 'assets/logo/sunprice.png' %}">
+
+    <!-- Box Icone -->
     <link rel="stylesheet" href="{% static 'assets/icones/font-awesome/css/font-awesome.css' %}">
     <link rel="stylesheet" href="{% static 'assets/icones/font-awesome/css/font-awesome.min.css' %}">
 
     <!-- Style -->
-    <link rel="stylesheet" href="{% static 'assets/ressources/styles/profile.css' %}">
-	</head>
-	<body>
-		<div class="header__wrapper">
-			<header>
-				<img src="{% static "assets/delete/banner/back4.jpg" %}">
-			</header>
-			<div class="cols__container">
-				<div class="left__col">
+    <link rel="stylesheet" href="{% static 'assets/ressources/styles/SunPrice.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/ressources/styles/sidebar.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/ressources/styles/search.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/ressources/styles/main.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/ressources/styles/slider.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/ressources/styles/footer.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/ressources/styles/responsive.css' %}">
+    
 
-					<div class="img__container">
-						<img src="{% static "assets/delete/banner/back1.jpg" %}"/>
-						<span></span>
-					</div>
-					<h2>{{ product.user.nom_boutique }}</h2>
-					<p>{{ product.user.email }}</p>
+    <title> SunPrice </title>
+</head>
+<body>
 
-                    <ul class="about">
-						<li><span><i class="fa fa-map-marker gold"></i></span>{{ product.user.pays }}</li>
-						<li><span><i class="fa fa-map gold"></i></span>{{ product.user.ville }}</li>
-						<li><span><i class="fa fa-home gold"></i></span>{{ product.user.quartier }}</li>
-					</ul>
+	<header class="hero">
+        <div class="hero-content">
+            <h2>
+                Bienvenue sur {{ product.user.nom_boutique }}
+                <p>Découvrez nos produits!</p>
+            </h2>
+			<a href="{% url 'user_detail' user_id=product.user.id %}" class="search-btn" type="submit">Visiter notre boutique</a>
+        </div>
+    </header>
 
-
-					<div class="content">
-                        <p>
-                            Vous pouvez contacter ce boutique via ces boutons en dessous(appel téléphonique, whatsapp, email). En cliquant sur ces boutons, vous les contacterez directement sans intermediaire.
-                        </p>
-						<ul>
-                            <li> <a class="primary" href="tel:+{{ product.user.indicatif_pays }} {{ product.user.number_phone }}"><i class="fa fa-phone"></i></a></li>
-                            <li> <a class="success" href="https://wa.me/+{{ product.user.indicatif_pays }}{{ product.user.number_phone }}"><i class="fa fa-whatsapp"></i></a></li>
-                            <li> <a class="danger" href="mailto:{{ product.user.email }}"><i class="fa fa-envelope"></i></a></li>
-						</ul>
-					</div>
-
-				</div>
-
-				<div class="right__col">
-					<nav>
-						<ul>
-						<li><a href="#">Produits</a></li>
-						</ul>
-						<button>
-							<a href="{% url 'user_detail' user_id=product.user.id %}">
-								Visiter La Boutique
-							</a>
-						</button>
-					</nav>
-
-					<div class="photos">
-						<img src="{{ product.image.url }}"/>
-						<div class="details">
-							<h1>{{ product.title }}</h1>
-							<p>
-								{{ product.contenu_post }}
-                                <br> <br>
-                                <em class="gold">Mis en vente depuis le {{ product.date_creation_post|date:"d F Y à H:i" }}</em>
-							</p>
-							<span>{{ product.prix }} <br> FCFA</span>
-
-						</div>
-					</div>
-				</div>
-			</div>
-			<center>
-				{% if user.is_authenticated %}
-					{% if is_in_facture %}
-						<!-- Afficher le bouton pour enlever le produit de la facture -->
-						<form method="POST" action="{% url 'product_detail' product_id=product.id %}">
-							{% csrf_token %}
-							<button type="submit" name="remove">Enlever de la Facture</button>
-						</form>
-					{% else %}
-						<!-- Afficher le bouton pour ajouter le produit à la facture -->
-						<form method="POST" action="{% url 'product_detail' product_id=product.id %}">
-							{% csrf_token %}
-							<label for="quantity">Quantité :</label>
-							<input type="number" id="quantity" name="quantity" value="1" min="1" required>
-							<button type="submit">Ajouter au Facture</button>
-						</form>
+	<main class="product-detail-container">
+        <div class="product-detail-grid">
+            <!-- Image Section -->
+            <div class="product-image-section">
+                <img src="{{ product.image.url }}" alt="Panier de fruits frais" class="product-main-image">
+                <!-- <div class="product-thumbnails">
+                    <img src="images/image1.jpeg" alt="Thumbnail 1" class="thumbnail active">
+                    <img src="images/image2.jpeg" alt="Thumbnail 2" class="thumbnail">
+                    <img src="images/image3.jpeg" alt="Thumbnail 3" class="thumbnail">
+                    <img src="images/image2.jpeg" alt="Thumbnail 2" class="thumbnail">
+                </div> -->
+            </div>
+            <!-- Product Info Section -->
+            <div class="product-info-section">
+                <span class="vendor-badge vendor-badge-supermarket">{{ product.category }}</span>
+                <h1 class="product-title">{{ product.title }}</h1>
+                <div class="product-price">{{ product.prix }} FCFA</div>
+                <p class="product-description">
+                    {{ product.contenu_post|safe }}
+                </p>
+                
+                <div class="product-actions">
+						{% if is_in_facture %}
+								<form method="POST" action="{% url 'product_detail' product_id=product.id %}">
+									{% csrf_token %}
+									<button class="add-to-cart-btn" type="submit" name="remove">Enlever de la Facture</button>
+								</form>
+							{% else %}
+								<form method="POST" action="{% url 'product_detail' product_id=product.id %}">
+									{% csrf_token %}
+									<div class="quantity-selector">
+										<a class="quantity-btn minus">-</a>
+										<input type="number" value="1" min="1" class="quantity-input" id="quantity" name="quantity">
+										<a class="quantity-btn plus">+</a>
+									</div>
+									<button class="add-to-cart-btn" type="submit">
+										Ajouter au facture
+									</button>
+								</form>
+						{% endif %}
+                </div>
+				<em class="gold">Mis en vente depuis le {{ product.date_creation_post|date:"d F Y à H:i" }}</em>
+            </div>
+        </div>
+        <!-- Vendor Section -->
+        <section class="vendor-section">
+            <h2 class="section-title">À propos du vendeur</h2>
+            <div class="vendor-card">
+                <div class="vendor-banner">
+                    {% if product.user.banner_image and product.user.banner_image.url %}
+							<img src="{{ product.user.banner_image.url }}" class="banner-image">
+						{% else %}
+							<img src="{% static 'assets/default/user.png' %}" class="banner-image">
 					{% endif %}
-				{% else %}
-					<p>Veuillez vous connecter pour gérer votre facture.</p>
-				{% endif %}
-				
-			</center>
-			
-		</div>
-	</body>
+				</div>
+                <div class="vendor-profile">
+                    {% if product.user.profile_image and product.user.profile_image.url %}
+							<img src="{{ product.user.profile_image.url }}" class="profile-image">
+						{% else %}
+							<img src="{% static 'assets/default/user.png' %}" class="profile-image">
+					{% endif %}
+                    <div class="vendor-info">
+                        <h3 class="vendor-name">{{ product.user.nom_boutique }}</h3>
+                        <div class="vendor-details">
+                            <p><i class="fa fa-map-marker"></i> {{ product.user.pays }}, {{ product.user.ville }}, {{ product.user.quartier }} </p>
+                            <p><i class="fa fa-star"></i> 4.5/5 (150 avis)</p>
+                            <p><i class="fa fa-clock-o"></i> Ouvert aujourd'hui jusqu'à 20h</p>
+                        </div>
+						<a href="{% url 'user_detail' user_id=product.user.id %}" class="search-btn">
+							Visiter notre boutique
+						</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+	{% include 'footer/footer.html' %}
+	
+	<script src="{% static 'assets/ressources/scripts/SunPrice.js' %}"></script>
+</body>
 </html>

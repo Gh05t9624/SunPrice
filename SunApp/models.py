@@ -24,8 +24,7 @@ class CustomUser(BaseAbstractUser):
         ('particulier', 'Particulier'),
         ('boutiques', 'Boutiques'),
         ('supermarket', 'Super-Marché'),
-        ('superette', 'Superette'),
-        ('station', 'Station-Service'),
+        ('imobilier', 'Imobilier'),
     ]
     profile_image = models.ImageField(upload_to='profile_images/', null=True, blank=True)
     banner_image = models.ImageField(upload_to='banner_images/', null=True, blank=True)
@@ -83,7 +82,7 @@ class Product(models.Model):
     quartier = models.CharField(max_length=50, null=True, blank=True)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     title = models.CharField(max_length=255, null=True, blank=True)
-    prix = models.DecimalField(max_digits=10, decimal_places=2)
+    prix = models.DecimalField(max_digits=10, decimal_places=0)
     contenu_post = models.TextField()
     image = models.ImageField(upload_to='product_images/')
     session_info = models.CharField(max_length=255, null=True, blank=True)
