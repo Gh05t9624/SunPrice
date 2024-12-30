@@ -31,7 +31,9 @@
                 Bienvenue sur {{ product.user.nom_boutique }}
                 <p>Découvrez nos produits!</p>
             </h2>
+            {% if product.user %}
 			<a href="{% url 'user_detail' user_id=product.user.id %}" class="search-btn" type="submit">Visiter notre boutique</a>
+            {% endif %}
         </div>
     </header>
 
@@ -103,9 +105,11 @@
                             <p><i class="fa fa-star"></i> 4.5/5 (150 avis)</p>
                             <p><i class="fa fa-clock-o"></i> Ouvert aujourd'hui jusqu'à 20h</p>
                         </div>
+                        {% if product.user %}
 						<a href="{% url 'user_detail' user_id=product.user.id %}" class="search-btn">
 							Visiter notre boutique
 						</a>
+                        {% endif %}
                     </div>
                 </div>
             </div>

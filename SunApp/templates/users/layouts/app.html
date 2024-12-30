@@ -56,13 +56,46 @@
                 </a>
                 
                 {% endif %}
-                <a href="#" class="icon-btn" aria-label="Compte">
-                    {% if user.profile_image and user.profile_image.url %}
-                        <img src="{{ user.profile_image.url }}">
-                        {% else %}
-                            <img src="{% static 'assets/default/user.png' %}" class="profile-image">
-                    {% endif %}
+                <a class="icon-btn" aria-label="Compte">
+                    <svg class="menu-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" onclick="toggle()">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
                 </a>
+
+                <div class="profil-dropdown-list">
+                    <div class="dropdownh-header">
+                        <div class="user">
+                            <a href="#" class="icon-btn" aria-label="Compte">
+                                {% if user.profile_image and user.profile_image.url %}
+                                    <img src="{{ user.profile_image.url }}">
+                                    {% else %}
+                                        <img src="{% static 'assets/default/user.png' %}" class="profile-image">
+                                {% endif %}
+            
+                                <h5>
+                                    {{ user.first_name }} {{ user.last_name }} <br>
+                                    Votre statut:<span> {{ user.rôle }}</span>
+                                </h5>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="sidebar-content">
+                        {% if request.user.rôle != 'acheteur' %}
+                            <a href="product" class="sidebar-link">Poster un produit</a>
+                        {% endif %}
+
+                        {% if request.user.rôle == 'acheteur' %}
+                            <a href="facture" class="sidebar-link">Votre facture</a>
+                        {% endif %}
+                        
+                        <a href="#" class="sidebar-link">Boutiques</a>
+                        <a href="#" class="sidebar-link">Particuliers</a>
+
+                        <a href="{% url 'logout' %}" class="sidebar-link">Déconnexion</a>
+                    </div>
+                </div>
             </div>
             <button class="menu-btn" aria-label="Menu">
                 <svg class="menu-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

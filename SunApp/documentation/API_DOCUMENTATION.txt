@@ -1,0 +1,139 @@
+Guide d'utilisation de l'API SunPrice
+====================================
+
+1. Introduction
+--------------
+Cette API REST permet d'accéder aux données de SunPrice de manière programmatique. Elle peut être utilisée pour développer des applications mobiles, des logiciels desktop ou d'autres services web.
+
+2. Authentification
+------------------
+L'API utilise une authentification par token. Pour obtenir un token :
+
+POST /api-token-auth/
+{
+    "username": "votre_email",
+    "password": "votre_mot_de_passe"
+}
+
+Une fois le token obtenu, incluez-le dans vos requêtes :
+Header: Authorization: Token votre_token_ici
+
+3. Endpoints Disponibles
+-----------------------
+
+3.1 Utilisateurs (/api/users/)
+-----------------------------
+- GET /api/users/ : Liste tous les utilisateurs
+- GET /api/users/{id}/ : Détails d'un utilisateur
+- GET /api/users/{id}/products/ : Produits d'un utilisateur spécifique
+
+Filtres disponibles :
+- ?search=terme : Recherche dans username, email, pays, ville, quartier
+- ?rôle=type : Filtre par rôle (boutiques, supermarket, etc.)
+- ?pays=pays : Filtre par pays
+- ?ville=ville : Filtre par ville
+
+3.2 Produits (/api/products/)
+----------------------------
+- GET /api/products/ : Liste tous les produits
+- GET /api/products/{id}/ : Détails d'un produit
+- POST /api/products/ : Créer un nouveau produit
+- PUT /api/products/{id}/ : Modifier un produit
+- DELETE /api/products/{id}/ : Supprimer un produit
+
+Filtres disponibles :
+- ?search=terme : Recherche dans title et contenu_post
+- ?category=type : Filtre par catégorie
+- ?pays=pays : Filtre par pays
+- ?ville=ville : Filtre par ville
+- ?ordering=prix : Tri par prix (utilisez -prix pour ordre décroissant)
+- ?ordering=created_at : Tri par date de création
+
+3.3 Factures (/api/factures/)
+----------------------------
+- GET /api/factures/ : Liste les factures de l'utilisateur connecté
+- GET /api/factures/{id}/ : Détails d'une facture
+- POST /api/factures/ : Créer une nouvelle facture
+- PUT /api/factures/{id}/ : Modifier une facture
+- DELETE /api/factures/{id}/ : Supprimer une facture
+
+Filtres disponibles :
+- ?is_public=true/false : Filtre les factures publiques/privées
+- ?ordering=created_at : Tri par date de création
+
+4. Exemples d'Utilisation
+------------------------
+
+4.1 Python avec requests :
+
+import requests
+
+# Authentification
+auth_response = requests.post('http://votre-domaine.com/api-token-auth/', 
+    data={'username': 'email@example.com', 'password': 'password'})
+token = auth_response.json()['token']
+
+headers = {'Authorization': f'Token {token}'}
+
+# Obtenir la liste des produits
+response = requests.get('http://votre-domaine.com/api/products/', headers=headers)
+products = response.json()
+
+# Créer un nouveau produit
+new_product = {
+    'title': 'Nouveau Produit',
+    'prix': 1000,
+    'category': 'electronique'
+}
+response = requests.post('http://votre-domaine.com/api/products/', 
+    headers=headers, data=new_product)
+
+4.2 JavaScript avec fetch :
+
+// Authentification
+const login = async () => {
+    const response = await fetch('/api-token-auth/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            username: 'email@example.com',
+            password: 'password'
+        })
+    });
+    const data = await response.json();
+    return data.token;
+};
+
+// Obtenir les produits
+const getProducts = async (token) => {
+    const response = await fetch('/api/products/', {
+        headers: {
+            'Authorization': `Token ${token}`
+        }
+    });
+    return await response.json();
+};
+
+5. Bonnes Pratiques
+------------------
+1. Toujours inclure le token d'authentification dans les requêtes
+2. Utiliser la pagination pour les grandes listes (par défaut: 10 éléments par page)
+3. Utiliser les filtres pour optimiser les requêtes
+4. Gérer les erreurs (codes HTTP 4xx et 5xx)
+5. Mettre en cache les réponses quand c'est possible
+
+6. Limites et Quotas
+-------------------
+- Pagination : 10 éléments par page
+- Rate limiting : À définir selon vos besoins
+- Taille maximale des fichiers : Selon configuration du serveur
+
+7. Support
+---------
+Pour toute question ou problème :
+- Créer une issue sur le dépôt du projet
+- Contacter l'équipe technique à support@sunprice.com
+
+Note : Remplacez 'votre-domaine.com' par l'URL réelle de votre API en production. 

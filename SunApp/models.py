@@ -62,32 +62,25 @@ class CustomUser(BaseAbstractUser):
 
     
 class Product(models.Model):
-    CATEGORY_CHOICES = [
-        ('electronics', 'Électronique'),
-        ('fashion', 'Mode et Vêtements'),
-        ('home_garden', 'Maison et Jardin'),
-        ('beauty_health', 'Beauté et Santé'),
-        ('food_drink', 'Alimentation et Boissons'),
-        ('sports_leisure', 'Sport et Loisirs'),
-        ('books_media', 'Livres et Médias'),
-        ('toys_kids', 'Jouets et Enfants'),
-        ('automotive_tools', 'Automobile et Outils'),
-        ('pets', 'Animaux'),
-        ('services', 'Services et Abonnements'),
-        ('special_offers', 'Offres spéciales / Promotions'),
-    ]
-    category = models.CharField(max_length=50, choices=CATEGORY_CHOICES, default='electronics')
-    pays = models.CharField(max_length=50, null=True, blank=True)
-    ville = models.CharField(max_length=50, null=True, blank=True)
-    quartier = models.CharField(max_length=50, null=True, blank=True)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    title = models.CharField(max_length=255, null=True, blank=True)
-    prix = models.DecimalField(max_digits=10, decimal_places=0)
+    CATEGORY_CHOICES = [
+        ('Electronics', 'Électronique'),
+        ('Fashion', 'Mode'),
+        ('Home_Garden', 'Maison & Jardin'),
+        # Ajoutez d'autres catégories selon vos besoins
+    ]
+
+    title = models.CharField(max_length=255)
     contenu_post = models.TextField()
-    image = models.ImageField(upload_to='product_images/')
-    session_info = models.CharField(max_length=255, null=True, blank=True)
+    category = models.CharField(max_length=50, choices=CATEGORY_CHOICES)
+    prix = models.DecimalField(max_digits=10, decimal_places=2)
+    image = models.ImageField(upload_to='products/')
     date_creation_post = models.DateTimeField(auto_now_add=True)
-    
+    # ... autres champs ...
+
+    def __str__(self):
+        return self.title
+
 class Facture(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)

@@ -1,58 +1,51 @@
 from django.urls import path, include
-
-# ========== Authentification ===================
-from SunApp.views import check_notifications, log_in, mark_notifications_as_read, notifications_view, register, log_out, profile
-
-# ========== Les Pages Users =======================
-from SunApp.views import home, boutique, super_marcher, superette, particulier, imobilier, user_map_view, facture_users
-
-# ========== Les Pages Notifications =======================
-from SunApp.views import notifications
-
-# ========= Les Pages Admins =======================
-from SunApp.views import SuperAdmin
-
-# ========== Les Formulaires =================
-from SunApp.views import create_product, facture
-# ========== Details =========================
-from SunApp.views import product_detail, facture_detail
+from rest_framework.routers import DefaultRouter
+from .api_views import CustomUserViewSet, ProductViewSet, FactureViewSet
+from rest_framework.authtoken.views import obtain_auth_token
 from . import views
 
-
+router = DefaultRouter()
+router.register(r'users', CustomUserViewSet)
+router.register(r'products', ProductViewSet)
+router.register(r'factures', FactureViewSet, basename='facture')
 
 urlpatterns = [
+    path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
+
     # ========== Authentification ==================
-    path('', log_in, name = 'login'),
-    path('register', register, name = 'register'),
-    path('logout', log_out, name = 'logout'),
-    path('profil', profile, name = 'profil'),
-    path('user-map', user_map_view, name='user_map'),
-    
+    path('', views.log_in, name='login'),
+    path('register', views.register, name='register'),
+    path('logout', views.log_out, name='logout'),
+    path('profil', views.profile, name='profil'),
+    path('user-map', views.user_map_view, name='user_map'),
     
     # ========== Pages Users ======================
-    path('home', home, name = 'home'),
-    path('boutique', boutique, name = 'boutique'),
-    path('super_marcher', super_marcher, name = 'super_marcher'),
-    path('superette', superette, name = 'superette'),
-    path('particulier', particulier, name = 'particulier'),
-    path('imobilier', imobilier, name = 'imobilier'),
-    path('facture_users', facture_users, name = 'facture_users'),
+    path('home', views.home, name='home'),
+    path('boutique', views.boutique, name='boutique'),
+    path('super_marcher', views.super_marcher, name='super_marcher'),
+    path('superette', views.superette, name='superette'),
+    path('particulier', views.particulier, name='particulier'),
+    path('imobilier', views.imobilier, name='imobilier'),
+    path('facture_users', views.facture_users, name='facture_users'),
     
     # ========== Pages de Notifications ======================
-    path('notifications', notifications, name='notifications'),
-    path('notifications/', notifications_view, name='notifications'),
-    path('mark-notifications-as-read/', mark_notifications_as_read, name='mark_notifications_as_read'),
-    path('check_notifications/', check_notifications, name='check_notifications'),
+    path('notifications/', views.notifications, name='notifications'),
+    path('notifications_view/', views.notifications_view, name='notifications_view'),
+    path('mark-notifications-as-read/', views.mark_notifications_as_read, name='mark_notifications_as_read'),
+    path('check_notifications/', views.check_notifications, name='check_notifications'),
     
     # ========== Pages Admins ======================
-    path('SuperAdmin', SuperAdmin, name= 'SuperAdmin'),
+    path('SuperAdmin/', views.SuperAdmin, name='SuperAdmin'),
     
     # ========== Les Formulaires ================
-    path('product', create_product, name = 'product'),
-    path('facture', facture, name='facture'),
+    path('product/', views.create_product, name='product'),
+    path('facture/', views.facture, name='facture'),
     
     # ========== Details ================
-    path('product/<int:product_id>/', product_detail, name='product_detail'),
-    path('profiles/<int:user_id>/', views.user_detail, name='user_detail'),
-    path('facture_detail/<int:id>/', facture_detail, name='facture_detail'),
+    path('product/<int:product_id>/', views.product_detail, name='product_detail'),
+    path('profiles/<int:user_id>', views.user_detail, name='user_detail'),
+    path('facture_detail/<int:id>/', views.facture_detail, name='facture_detail'),
+    
+    path('api/', include(router.urls)),
+    path('api-auth/', include('rest_framework.urls')),
 ]

@@ -4,59 +4,47 @@
 
 {% block Authentification %}
 
-<img src="{% static 'assets/logo/bio.jpg' %}">
+<div class="container">
+    <div class="bg" 
+style="background: url('{% static 'assets/default/image1.jpeg' %}') no-repeat center; background-size: cover;
+            z-index: -1; content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        left: 0;
+        top: 0; background-size: cover;
+        filter: blur(30px);
+        z-index: -1;"></div>
 
-<div id="wrapper">
-    <div class="form-container">
-        <span class="form-heading"> Connexion </span>
-        <h3 class="danger">{{ error }}</h3>
-        
-        {% for message in messages %}
-            <div class="alert alert-danger">
-                <h2 class="success"> {{ message }} </h2>
+    <div class="contact-box">
+        <div class="left">
+            <img src="{% static 'assets/default/image1.jpeg' %}">
+            <div class="text-content">
+                <h3><span>Sun</span>Price</h3>
+                <p>Les meilleurs prix près de chez vous!</p>
             </div>
-        {% endfor %}
-        <form method="POST" action="/">
+        </div>
+        <form method="POST" action="/" class="right">
             {% csrf_token %}
-
-            <h3 class="danger"> {{ error }} </h3>
-            
-            <div class="input-group">
-                <i class="fa fa-envelope icone"></i>
-                <input id="email" type="email" class="form-control" name="email" required autocomplete="email" placeholder="Votre mail">
-                <span class="bar"></span>
-            </div>
-            
-            <div class="input-group">
-                <i class="fa fa-lock icone"></i>
-                <input id="password" type="password" class="form-control" name="password" required autocomplete="new-password" placeholder="Votre Mot de Passe">
-                <span class="bar"></span>
-                <i class="fa fa-eye-slash right danger" id="pass-icon" onclick="pass()"></i>
-            </div>
-
+            <h2>Connexion</h2>
             
 
-            <div class="input-group">
-                <button type="submit">
-                    Se Connecter
-                </button>
+            <div class="inputs">
+                <i class="fa fa-envelope"></i>
+                <input id="email" type="email" class="field" name="email" required autocomplete="email" placeholder="Votre mail">
+            </div>
+            <div class="inputs">
+                <i class="fa fa-unlock"></i>
+                <input id="password" type="password" class="field" name="password" required autocomplete="new-password" placeholder="Votre Mot de Passe">
             </div>
 
-            <div class="switch-login">
+            <button type="submit" class="btn">Se connecter</button>
+
+            <div class="options">
                 {% comment %} {% url 'reset_password' %} {% endcomment %}
-                <a href="#" class="danger"> 
-                    <span>
-                        Mot de passe oublié?
-                    </span>
-                </a>
-
-                <a href="register" class="white"> 
-                    <span>
-                        Créer un compte
-                    </span> 
-                </a>
+                <p>Mot de passe oublié? &nbsp; <a href="#">Cliquez ici</a></p>
+                <p>Pas de compte? &nbsp; <a href="register">S'inscrire</a></p>
             </div>
-
         </form>
     </div>
 </div>

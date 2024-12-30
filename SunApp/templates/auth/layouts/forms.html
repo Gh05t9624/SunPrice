@@ -14,24 +14,44 @@
     <!-- Style -->
     <link rel="stylesheet" href="{% static 'assets/formulaires/styles/form.css' %}">
 
-    <title> Galsen </title>
+    <title> SunPrice </title>
 </head>
 <body>
-    <div id="app">
+    
 
-        <main>
+    {% block Authentification %}
 
-            {% block Authentification %}
-        
-            {% endblock %}
-            
-        </main>
-    </div>
+    {% endblock %}
 
     <script src="{% static 'assets/formulaires/scripts/edit.js' %}"></script>
     <script src="{% static 'assets/formulaires/scripts/views.js' %}"></script>
-    <script src="{% static 'assets/algos/scripts/secrete.js' %}"></script>
+    <!-- <script src="{% static 'assets/algos/scripts/secrete.js' %}"></script> -->
     <script src="{% static 'assets/ressources/scripts/Retour.js' %}"></script>
+
+    <div class="filters-section">
+        <form method="GET" action="" class="filter-form">
+            <div class="filter-group">
+                <label for="prix_min">Prix minimum:</label>
+                <input type="number" name="prix_min" id="prix_min" value="{{ request.GET.prix_min }}">
+            </div>
+            
+            <div class="filter-group">
+                <label for="prix_max">Prix maximum:</label>
+                <input type="number" name="prix_max" id="prix_max" value="{{ request.GET.prix_max }}">
+            </div>
+            
+            <div class="filter-group">
+                <label for="tri">Trier par:</label>
+                <select name="tri" id="tri">
+                    <option value="prix_asc" {% if request.GET.tri == 'prix_asc' %}selected{% endif %}>Prix croissant</option>
+                    <option value="prix_desc" {% if request.GET.tri == 'prix_desc' %}selected{% endif %}>Prix décroissant</option>
+                    <option value="titre" {% if request.GET.tri == 'titre' %}selected{% endif %}>Titre</option>
+                </select>
+            </div>
+            
+            <button type="submit" class="filter-button">Appliquer les filtres</button>
+        </form>
+    </div>
 
 </body>
 </html>

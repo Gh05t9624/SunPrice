@@ -1,85 +1,83 @@
 {% extends 'auth/layouts/forms.html' %}
-
 {% load static %}
 
 {% block Authentification %}
-<img src="{% static 'assets/logo/bio.jpg' %}">
 
-<div id="wrapper">
-    <div class="form-container">
-        <span class="form-heading"> Profil </span>
-        
-        <form method="POST" action="/profil">
+<div class="container">
+    <div class="bg" 
+style="background: url('{% static 'assets/default/image1.jpeg' %}') no-repeat center; background-size: cover;
+            z-index: -1; content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        left: 0;
+        top: 0; background-size: cover;
+        filter: blur(30px);
+        z-index: -1;"></div>
+
+    <div class="contact-box">
+        <div class="left">
+            <img src="{% static 'assets/default/image1.jpeg' %}">
+            <div class="text-content">
+                <h3><span>Sun</span>Price</h3>
+                <p>Les meilleurs prix près de chez vous!</p>
+            </div>
+        </div>
+        <form method="POST" action="/profil" class="right">
             {% csrf_token %}
+            <h2>Profil</h2>
 
-            <div class="input-group wrapper">
-                <i class="fa fa-map-marker"></i>
-                <div autocomplete="off">
-                    <div>
-                        <input type="text" class="form-control" id="countryInput" name="pays" placeholder="Votre pays" onchange="updateIndicatif()" required autocomplete="off" />
-
-                      <span class="bar"></span>
+				<div class="inputs">
+					<i class="fa fa-flag"></i>
+					<input type="text" class="field"  id="countryInput" name="pays" placeholder="Votre pays" onchange="updateIndicatif()" required autocomplete="off" >
+                    
+                    <div class="bar">
+                        <ul class="list"></ul>
                     </div>
-                    <ul class="list"></ul>
+				</div>
+
+				<div class="inputs">
+					<i class="fa fa-map"></i>
+					<input type="text" class="field" id="ville"  name="ville" required placeholder="Votre ville" autocomplete="off">
+				</div>
+
+                <div class="inputs">
+					<i class="fa fa-home"></i>
+					<input type="text" class="field" id="quartier" name="quartier" required placeholder="Votre quartier" autocomplete="off">
+				</div>
+
+                <div class="inputs">
+					<i class="fa fa-flag"></i>
+					<input type="text" class="field" id="indicatif"  name="indicatif" required placeholder="Votre indicatif pays" autocomplete="off">
+				</div>
+
+                <div class="inputs">
+					<i class="fa fa-phone"></i>
+					<input id="phone" type="number" class="field" name="phone" required placeholder="Votre numero de téléphone" autocomplete="off">
+				</div>
+
+                <div class="inputs">
+                    <i class="fa fa-user"></i>
+                    <input id="firstname" type="text" class="field" name="firstname" required placeholder="Votre Prenom" autocomplete="off">
+                    <span class="bar"></span>
                 </div>
-            </div>
+    
+                <div class="inputs">
+                    <i class="fa fa-user"></i>
+                    <input id="lastname" type="text" class="field" name="lastname" required placeholder="Votre Nom" autocomplete="off">
+                    <span class="bar"></span>
+                </div>
+    
+                <div class="inputs">
+                    <i class="fa fa-calendar"></i>
+                    <input type="date" class="field" name="birthday" id="date" min="1960-01-01" style="font-weight: bold;" required autocomplete="off">
+                    <span class="bar"></span>
+                </div>
 
-            <div class="input-group">
-                <i class="fa fa-map"></i>
-                <input id="ville" type="text" class="form-control" name="ville" required placeholder="Votre ville" autocomplete="off">
-                <span class="bar"></span>
-            </div>
-
-            <div class="input-group">
-                <i class="fa fa-home"></i>
-                <input id="quartier" type="text" class="form-control" name="quartier" required placeholder="Votre quartier" autocomplete="off">
-                <span class="bar"></span>
-            </div>
-
-            <div class="input-group">
-                <i class="fa fa-flag"></i>
-                <input id="indicatif" type="number" class="form-control" name="indicatif" required placeholder="Votre indicatif pays" autocomplete="off">
-                <span class="bar"></span>
-            </div>
-
-            <div class="input-group">
-                <i class="fa fa-phone"></i>
-                <input id="phone" type="number" class="form-control" name="phone" required placeholder="Votre numéro de téléphone" autocomplete="off">
-                <span class="bar"></span>
-            </div>
-
-
-            <div class="input-group">
-                <i class="fa fa-user"></i>
-                <input id="firstname" type="text" class="form-control" name="firstname" required placeholder="Votre Prénom" autocomplete="off">
-                <span class="bar"></span>
-            </div>
-
-            <div class="input-group">
-                <i class="fa fa-user"></i>
-                <input id="lastname" type="text" class="form-control" name="lastname" required placeholder="Votre Nom" autocomplete="off">
-                <span class="bar"></span>
-            </div>
-
-            <div class="input-group">
-                <i class="fa fa-calendar"></i>
-                <input type="date" name="birthday" id="date" min="1960-01-01" style="font-weight: bold;" required autocomplete="off">
-                <span class="bar"></span>
-            </div><br>
-            <h3 class="danger" style="margin-left: 10px;">Date de naissance ^</h3>
-
-
-            <div class="input-group">
-                <button type="submit" name="inscription" value="Valider">
-                    Valider
-                </button>
-            </div>
-
-            
-
+				<button type="submit" class="btn">Valider</button>
         </form>
-
     </div>
 </div>
+
 
 {% endblock %}

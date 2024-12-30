@@ -6,10 +6,16 @@ from django.contrib.auth import authenticate, login, logout
 from .forms import CustomUserCreationForm
 from django.core.exceptions import ValidationError
 from django.contrib import messages
+from django.core.paginator import Paginator
+from django_filters import rest_framework as filters
 
 from .models import CustomUser, Notification, Product, Facture
 from django.db.models import Q
 import unicodedata
+from .ai_services.recommendation import ProductRecommender
+from .ai_services.smart_search import SmartSearch
+from .ai_services.price_analysis import PriceAnalyzer
+from .filters import ProductFilter
 
 # Create your views here.
 ''' =========== Authentication ========= '''
@@ -96,6 +102,7 @@ def profile(request):
 
         # Déconnecter l'utilisateur après la mise à jour du profil
         logout(request)
+        messages.success(request, 'Déconnecté👌🏾')
         return redirect('login')  # Rediriger vers la page de connexion après la mise à jour du profil
 
     user_role = request.user.rôle
@@ -108,38 +115,64 @@ def profile(request):
 def log_out(request):
     # pass
     logout(request)
-    messages.success(request, 'Déconnecter👌🏾')
+    messages.success(request, 'Déconnecté👌🏾')
     return redirect('login')
 
 ''' =========== User Pages ========= '''
 def home(request):
-    query = request.GET.get('poste', '')  # Récupérer le terme de recherche
+    query = request.GET.get('poste', '')
+    category = request.GET.get('category', '')
+    min_price = request.GET.get('min_price')
+    max_price = request.GET.get('max_price')
     
-    # Récupérer tous les produits déjà ajoutés à une facture pour l'utilisateur courant
-    factures = Facture.objects.filter(user=request.user)
-    factured_product_ids = factures.values_list('product_id', flat=True)
+    logging.debug(f"Recherche reçue pour: {query}")
+    
+    products = Product.objects.all()
 
-    # Filtrer les produits par titre en fonction du terme de recherche, en excluant ceux déjà facturés
-    products = list(Product.objects.filter(
-        Q(title__icontains=query),
-        ~Q(id__in=factured_product_ids)
-    ).order_by('prix'))
+    if query:
+        smart_search = SmartSearch()
+        products = smart_search.search(query)
+        logging.debug(f"Nombre de produits trouvés: {products.count()}")
+        if not products.exists():
+            messages.warning(request, "Aucun produit trouvé pour votre recherche.")
     
-    # Nombre total de produits trouvés
-    total_products = len(products)
+    # Appliquer les filtres
+    product_filter = ProductFilter(request.GET, queryset=products)
+    products = product_filter.qs
     
-    # Diviser les produits en deux catégories
-    mid_point = total_products // 2
-    cheaper_products = products[:mid_point]
-    expensive_products = products[mid_point:]
+    # Diviser les produits en moins chers et plus chers
+    if products.exists():
+        sorted_products = products.order_by('prix')
+        mid_index = len(sorted_products) // 2
+        cheaper_products = sorted_products[:mid_index]
+        expensive_products = sorted_products[mid_index:]
+        logging.debug(f"Cheaper Products Count: {len(cheaper_products)}")
+        logging.debug(f"Expensive Products Count: {len(expensive_products)}")
+    else:
+        cheaper_products = []
+        expensive_products = []
+        logging.debug("Aucun produit trouvé après filtrage.")
     
-    # Passer les produits et les catégories au template
+    if request.user.is_authenticated:
+        recommender = ProductRecommender()
+        recommended_products = recommender.get_product_recommendations(request.user)
+    else:
+        recommended_products = []
+    
+    price_analyzer = PriceAnalyzer()
+    price_analysis = price_analyzer.analyze_price_trends()
+    
     context = {
         'products': products,
         'cheaper_products': cheaper_products,
         'expensive_products': expensive_products,
-        'total_products': total_products,
+        'recommended_products': recommended_products,
+        'price_analysis': price_analysis,
         'query': query,
+        'selected_category': category,
+        'min_price': min_price,
+        'max_price': max_price,
+        'filter': product_filter,
     }
     
     return render(request, 'users/pages/home.html', context)
