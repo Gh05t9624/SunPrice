@@ -79,6 +79,24 @@ h1, h2, h3, h4, h5, h6 {
     justify-content: center;
 }
 
+.mob-actions
+{
+    position: absolute;
+    right: 18%;
+    display: flex;
+    align-items: center;
+}
+
+.mob-actions div
+{
+    cursor: pointer;
+}
+
+.mob-actions .search
+{
+    display: none;
+}
+
 .icon-btn {
     background: none;
     border: none;
@@ -177,6 +195,63 @@ span.menus
     z-index: 10000;
 }
 
+.notif-dropdown-list {
+    position: fixed;
+    right: 20px;
+    top: 70px;
+    width: 350px;
+    background: var(--color-white);
+    border-radius: 10px;
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition: max-height 0.5s ease, 
+                opacity 0.5s ease, 
+                visibility 0.5s;
+    box-shadow: var(--shadow-md);
+    z-index: 1000;
+}
+
+.notif-dropdown-list.active {
+    max-height: 500px;
+    opacity: 1;
+    visibility: visible;
+    padding: 10px;
+}
+
+.noti-btn {
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.noti-btn:hover {
+    transform: scale(1.1);
+}
+
+.noti-btn.active i {
+    color: var(--color-yellow);
+}
+
+.notif-dropdown-list.active{
+    max-height: 90%;
+    box-shadow: var(--shadow-md);
+}
+
+.notification-header
+{
+    width: 90%;
+    position: absolute;
+    top: 0;
+    margin: 10px;
+    background: var(--color-white);
+    border-bottom: 1px solid var(--color-yellow);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
 .profil-dropdown-list.active{
     max-height: 90%;
     box-shadow: var(--shadow-md);
@@ -192,6 +267,56 @@ span.menus
     display: flex;
     align-items: center;
     justify-content: space-between;
+}
+
+.notification-body
+{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 10px;
+    margin-top: 20px;
+    overflow: auto;
+}
+
+.notification-body .notification
+{
+    margin-top: 10px;
+    text-decoration: none;
+    color: var(--color-black);
+}
+
+.notification-delete {
+    background: transparent;
+    border: none;
+    color: var(--color-gray);
+    cursor: pointer;
+    padding: 5px;
+    transition: color 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 5px;
+}
+
+.notification-delete i {
+    font-size: 16px;
+}
+
+.notification-delete:hover {
+    color: var(--color-black);
+}
+
+.notification-delete:focus {
+    outline: none;
+    color: var(--color-black);
+}
+
+.notification-user
+{
+    color: var(--color-yellow);
+    font-weight: bold
 }
 
 .dropdownh-header .user a

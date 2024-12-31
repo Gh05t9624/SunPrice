@@ -117,7 +117,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-
 // ============== Bouton Links ==========
 const navlinks = document.querySelectorAll('.nav-link');
 const mobilenavlinks = document.querySelectorAll('.mobile-nav-link');
@@ -137,15 +136,9 @@ navlinks.forEach(link => {
 })
 
 // ===== Remove Bouton Links Mobile =====
-const changerActiveLink = () => {
-    mobilenavlinks.forEach(link => {
-        link.classList.remove('active-link');
-    })
-}
-
 mobilenavlinks.forEach(link => {
     link.addEventListener('click', () => {
-        changerActiveLink();
+        changeActiveLink();
         link.classList.add('active-link');
     })
 })
@@ -154,3 +147,36 @@ mobilenavlinks.forEach(link => {
 let profilDropdownList = document.querySelector(".profil-dropdown-list");
 
 const toggle = ()  => profilDropdownList.classList.toggle("active");
+
+document.addEventListener('DOMContentLoaded', function() {
+    let NotiDropdownList = document.querySelector(".notif-dropdown-list");
+    let NotiBtnElement = document.querySelector(".noti-btn");
+
+    const toggleNoti = () => {
+        NotiDropdownList.classList.toggle("active");
+        NotiBtnElement.classList.toggle("active");
+    };
+
+    // Fermer la liste déroulante en cliquant à l'extérieur
+    document.addEventListener('click', function(event) {
+        if (!NotiDropdownList.contains(event.target) && 
+            !NotiBtnElement.contains(event.target)) {
+            NotiDropdownList.classList.remove("active");
+            NotiBtnElement.classList.remove("active");
+        }
+    });
+
+    // Empêcher la propagation de l'événement pour le bouton de notification
+    NotiBtnElement.addEventListener('click', function(event) {
+        event.stopPropagation();
+        toggleNoti();
+    });
+
+    // Gestion de l'accessibilité avec le clavier
+    NotiBtnElement.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            toggleNoti();
+        }
+    });
+});

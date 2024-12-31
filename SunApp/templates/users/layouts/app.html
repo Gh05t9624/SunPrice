@@ -90,10 +90,38 @@
                             <a href="facture" class="sidebar-link">Votre facture</a>
                         {% endif %}
                         
-                        <a href="#" class="sidebar-link">Boutiques</a>
+                        <a href="#" class="sidebar-link">Historiques</a>
                         <a href="#" class="sidebar-link">Particuliers</a>
 
                         <a href="{% url 'logout' %}" class="sidebar-link">Déconnexion</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mob-actions">
+                <div class="search">
+                    <a href="#search">
+                        <i class="fa fa-search"></i>
+                    </a>
+                </div>
+
+                <div class="notifications noti-btn" onclick="toggleNoti()" tabindex="0" role="button" aria-label="Afficher les notifications">
+                    <i class="fa fa-bell"></i>
+                </div>
+
+                <div class="notif-dropdown-list">
+                    <div class="notification-header">
+                        <h3>Notifications</h3>
+                        <span class="close-notification">&times;</span>
+                    </div>
+                    <div class="notification-body">
+                        <a href="#" class="notification product-like" aria-label="#">
+                            <span class="notification-user">Oumar Thioubou</span>
+                            <span class="notification-action">a aimé votre produit</span>
+                        </a>
+                        <button class="notification-delete" aria-label="Supprimer la notification">
+                            <i class="fa fa-trash"></i>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -162,6 +190,7 @@
 
     <!-- Overlay -->
     <div class="overlay"></div>
+
 
     {% block contenu %}
 

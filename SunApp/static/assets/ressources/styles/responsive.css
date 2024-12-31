@@ -27,9 +27,24 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Responsive adjustments for vendor cards */
+@media (min-width: 767px) {
+    .mob-actions .notifications
+    {
+        margin-right: 20px;
+    }
+    
+}
+
 @media (max-width: 767px) {
     .nav-links, .nav-actions {
         display: none;
+    }
+
+    .notif-dropdown-list
+    {
+        left: 0;
+        top: 70px;
+        width: 100%;
     }
     
     .mobile-nav {
@@ -128,6 +143,12 @@ h1, h2, h3, h4, h5, h6 {
         margin-left: 0;
         margin-top: 10px;
         width: 100%;
+    }
+
+    .mob-actions .search
+    {
+        display: block;
+        margin-right: 20px;
     }
 }
 
