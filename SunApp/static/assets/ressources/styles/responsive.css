@@ -1,0 +1,218 @@
+:root {
+    --color-yellow-light: #F2B749;
+    --color-yellow: #F2A74B;
+    --color-yellow-dark: #8C6E14;
+    --color-white: #FFFFFF;
+    --color-black: #000000;
+    --color-gray: #666666;
+    --color-gray-light: #F5F5F5;
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    color: var(--color-black);
+    line-height: 1.5;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Responsive adjustments for vendor cards */
+@media (min-width: 767px) {
+    .mob-actions .notifications
+    {
+        margin-right: 20px;
+    }
+    
+}
+
+@media (max-width: 767px) {
+    .nav-links, .nav-actions {
+        display: none;
+    }
+
+    .notif-dropdown-list
+    {
+        left: 0;
+        top: 70px;
+        width: 100%;
+    }
+    
+    .mobile-nav {
+        display: block;
+    }
+    
+    .menu-btn {
+        display: block;
+        background: transparent;
+        border-color: 1px solid #8C6E14;
+        border-radius: 5px;
+    }
+    
+    body {
+        padding-bottom: 60px;
+        /* width: 110%; */
+    }
+
+    .vendors-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .vendor-profile {
+        padding: 0.75rem;
+    }
+
+    .vendor-info
+    {
+        margin-top: 20px;
+    }
+    
+    .profile-image {
+        width: 60px;
+        height: 60px;
+    }
+
+    .product-detail-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .product-main-image {
+        height: 300px;
+    }
+
+    .product-actions {
+        flex-direction: column;
+    }
+
+    .quantity-selector {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .quantity-btn
+    {
+        width: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .vendor-profile {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .vendor-details {
+        text-align: left;
+    }
+
+    .footer-content {
+        grid-template-columns: 1fr;
+    }
+    
+    .slider-section {
+        height: 300px;
+    }
+    
+    .slide-content {
+        left: 1rem;
+        bottom: 1rem;
+    }
+    
+    .slide-content h3 {
+        font-size: 1.5rem;
+    }
+
+    .product-actions form
+    {
+        width: 100%;
+        display: block;
+    }
+
+    .product-actions form button
+    {
+        margin-left: 0;
+        margin-top: 10px;
+        width: 100%;
+    }
+
+    .mob-actions .search
+    {
+        display: block;
+        margin-right: 20px;
+    }
+}
+
+@keyframes slide-up {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slide-down {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@media (width: 320px) {
+    body {
+        width: 115%;
+    }
+}
+
+@media (min-width: 768px) {
+    .nav-links {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .nav-actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .menu-btn, .mobile-nav {
+        display: none;
+    }
+}
+
+@media (min-width: 1024px) {
+    .products-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (min-width: 1280px) {
+    .products-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}

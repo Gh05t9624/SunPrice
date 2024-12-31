@@ -1,0 +1,306 @@
+:root {
+    --color-yellow-light: #F2B749;
+    --color-yellow: #F2A74B;
+    --color-yellow-dark: #8C6E14;
+    --color-white: #FFFFFF;
+    --color-black: #000000;
+    --color-gray: #666666;
+    --color-gray-light: #F5F5F5;
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+*{
+	padding: 0;
+	margin: 0;
+	box-sizing: border-box;
+	font-family: 'Quicksand', sans-serif;
+}
+
+body{
+	height: 100vh;
+	width: 100%;
+}
+
+.container{
+	position: relative;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 20px 100px;
+}
+
+.contact-box{
+	border-radius: 5px;
+	max-width: 850px;
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+	background-color: var(--color-white);
+	box-shadow: 0px 0px 19px 5px rgba(0,0,0,0.19);
+}
+
+.left{
+	position: relative;
+	background-size: cover;
+	height: 100%;
+	overflow: hidden;
+}
+
+.left img
+{
+	width: 100%;
+	height: 100%;
+	filter: blur(1px);
+	object-fit: cover;
+}
+
+.text-content {
+    position: absolute;
+	text-align: center;
+	bottom: 50%;
+    left: 2rem;
+    color: var(--color-white);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.text-content h3 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+	color: var(--color-yellow);
+	font-weight: bold;
+	font-size: 80px;
+}
+
+.text-content h3 span
+{
+	color: var(--color-white);
+}
+
+.text-content p
+{
+	font-size: 30px;
+	font-weight: 700;
+}
+
+.right{
+	padding: 25px 40px;
+}
+
+h2{
+	position: relative;
+	padding: 0 0 10px;
+	margin-bottom: 10px;
+}
+
+h2:after{
+	content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    height: 4px;
+    width: 50px;
+    border-radius: 2px;
+    background-color: var(--color-yellow);
+}
+
+.inputs
+{
+	display: flex;
+	align-items: center;
+}
+
+.inputs i
+{
+	display: flex;
+	align-items: center;
+	width: 40px;
+	padding-bottom: 20px;
+	color: var(--color-yellow);
+}
+
+.field{
+	width: 100%;
+	border: 2px solid rgba(0, 0, 0, 0);
+	outline: none;
+	background-color: rgba(230, 230, 230, 0.6);
+	padding: 0.5rem 1rem;
+	font-size: 1.1rem;
+	margin-bottom: 22px;
+	transition: .3s;
+}
+
+.field:hover{
+	background-color: rgba(0, 0, 0, 0.1);
+}
+
+textarea{
+	min-height: 150px;
+}
+
+.btn{
+	width: 100%;
+	padding: 0.5rem 1rem;
+	background-color: var(--color-yellow);
+	color: #fff;
+	font-size: 1.1rem;
+	border: none;
+	outline: none;
+	cursor: pointer;
+	transition: .3s;
+}
+
+.btn:hover{
+    background-color: var(--color-yellow-light);
+}
+
+.field:focus{
+    border: 2px solid var(--color-yellow);
+    background-color: #fff;
+}
+
+select
+{
+	border: none;
+	outline: none;
+}
+
+select .option:hover{
+    background-color: var(--color-yellow-light);
+	cursor: pointer;
+}
+
+.alert
+{
+	color: #f10707;
+	font-weight: 600;
+}
+
+.options {
+	display: block;
+	margin-top: 20px;
+}
+
+.options p {
+	display: flex;
+	font-size: 1.1rem;
+	font-weight: 600;
+	margin-bottom: 1px;
+}
+
+.options a {
+	display: flex;
+	text-decoration: none;
+	color: var(--color-yellow);
+	font-weight: 600;
+	font-size: 1.1rem;
+	transition: color 0.3s ease-in-out;
+	margin-bottom: 5px;
+}
+
+.options a:hover {
+	color: var(--color-yellow-dark);
+}
+
+input[type="checkbox"] {
+	width: 20px;
+	height: 20px;
+	accent-color: var(--color-yellow);
+	cursor: pointer;
+	transition: transform 0.2s ease-in-out;
+}
+
+input[type="checkbox"]:hover {
+	transform: scale(1.1);
+}
+
+.list
+{
+    width: 410px;
+    overflow: hidden;
+    background-color: #8C6E14;
+    border-radius: 0 0 5px 5px;
+	box-shadow: var(--shadow-md);
+    position: fixed;
+    z-index: 1000;
+	left: 22%;
+	top: 66px;
+}
+
+ul 
+{
+    list-style: none;
+}
+
+li.list-items 
+{
+    padding: 5px;
+    font-size: 30px;
+	color: #fff;
+}
+
+.list-items:hover 
+{
+    background-color: #dddddd;
+}
+
+@media screen and (max-width: 880px){
+	.container
+	{
+		padding: 0;
+		width: 100%;
+	}
+
+	.contact-box{
+		grid-template-columns: 1fr;
+		width: 100%;
+	}
+	.left{
+		height: 200px;
+	}
+
+	.text-content {
+		position: absolute;
+		text-align: center;
+		bottom: 1rem;
+		left: 2rem;
+		color: var(--color-white);
+		text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+	}
+
+	.text-content
+	{
+		font-size: 2rem;
+		margin-bottom: 0.5rem;
+	}
+
+	.text-content h3 {
+		font-size: 2rem;
+		margin-bottom: 0.5rem;
+		color: var(--color-yellow);
+		font-weight: bold;
+		font-size: 40px;
+	}
+	
+	.text-content h3 span
+	{
+		color: var(--color-white);
+	}
+	
+	.text-content p
+	{
+		font-size: 20px;
+		font-weight: 700;
+	}
+
+	.list
+	{
+		top: 238px;
+		left: 0;
+	}
+}

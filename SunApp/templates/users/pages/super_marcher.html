@@ -1,0 +1,91 @@
+{% extends 'users/layouts/app.html' %}
+
+{% load static %}
+
+{% block contenu %}
+
+<header class="hero" id="search">
+    <form class="hero-content">
+        <h2>Découvrez les meilleurs prix près de chez vous</h2>
+        <div class="search-bar">
+            <input type="search" name="poste" id="search-input" placeholder="Rechercher un supermarchés...">
+            <button class="search-btn-search" type="submit">Rechercher</button>
+        </div>
+    </form>
+</header>
+
+ <!-- Slider Section -->
+<section class="slider-section">
+    <div class="slider">
+        <a href="#" class="slide">
+            <img src="{% static 'assets/default/image1.jpeg' %}" alt="Tech Image 1" class="slide-image">
+            <div class="slide-content">
+                <h3>Découvrez nos offres</h3>
+                <p>Les meilleurs prix près de chez vous</p>
+            </div>
+        </a>
+        <a href="#" class="slide">
+            <img src="{% static 'assets/default/image2.jpeg' %}" alt="Tech Image 2" class="slide-image">
+            <div class="slide-content">
+                <h3>Produits locaux</h3>
+                <p>Soutenez vos commerces de proximité</p>
+            </div>
+        </a>
+        <a href="#" class="slide">
+            <img src="{% static 'assets/default/image2.jpeg' %}" alt="Tech Image 3" class="slide-image">
+            <div class="slide-content">
+                <h3>Prix compétitifs</h3>
+                <p>Comparez et économisez</p>
+            </div>
+        </a>
+    </div>
+    <button class="slider-btn prev">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+    </button>
+    <button class="slider-btn next">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+    </button>
+</section>
+
+<main class="main-content">
+    {% if query %}
+        <p>{{ supermarket|length }} résultat{% if supermarket|length > 1 %}s{% endif %} trouvé{% if supermarket|length > 1 %}s{% endif %}.</p>
+    {% endif %}
+    <section class="vendors-section">
+        {% if supermarket %}
+            <h2 class="section-title">Les Supermarchés</h2>
+            <div class="vendors-grid">
+                {% for supermarket in supermarket %}
+                    <a href="{% url 'user_detail' user_id=supermarket.id %}" class="vendor-card">
+                        <div class="vendor-banner">
+                            {% if supermarket.banner_image and supermarket.banner_image.url %}
+                                    <img src="{{ supermarket.banner_image.url }}" class="banner-image">
+                                {% else %}
+                                    <img src="{% static 'assets/default/user.png' %}" class="banner-image">
+                            {% endif %}
+                        </div>
+                        <div class="vendor-profile">
+                            {% if supermarket.profile_image and supermarket.profile_image.url %}
+                                    <img src="{{ supermarket.profile_image.url }}" class="profile-image">
+                                {% else %}
+                                    <img src="{% static 'assets/default/user.png' %}" class="profile-image">
+                            {% endif %}
+                            <div class="vendor-info">
+                                <h3 class="vendor-name">{{ supermarket.nom_boutique }}</h3>
+                                <span class="vendor-badge vendor-badge-boutique">{{ supermarket.pays }}, {{ supermarket.ville }}, {{ supermarket.quartier }}</span>
+                            </div>
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+            {% else %}
+                <h1 class="section_title">0 trouvé</h1>
+        {% endif %}
+    </section>
+</main>
+
+{% endblock %}

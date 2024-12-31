@@ -1,0 +1,147 @@
+{% extends 'users/layouts/app.html' %}
+
+{% load static %}
+
+{% block contenu %}
+
+    <header class="hero" id="search">
+        <form class="hero-content" method="GET" action="{% url 'home' %}">
+            <h2>Découvrez les meilleurs prix près de chez vous</h2>
+            <div class="search-bar">
+                <input type="search" name="poste" id="search-input" placeholder="Rechercher un produit..." required>
+                <button class="search-btn-search" type="submit">Rechercher</button>
+            </div>
+            <div class="filters">
+                <select name="category" id="category-filter" class="filter-select">
+                    <option value="">Toutes les catégories</option>
+                    {% for choice in Product.CATEGORY_CHOICES %}
+                        <option value="{{ choice.0 }}" {% if request.GET.category == choice.0 %}selected{% endif %}>{{ choice.1 }}</option>
+                    {% endfor %}
+                </select>
+                <div class="price-filter">
+                    <label for="min_price">Prix min:</label>
+                    <input type="number" name="min_price" id="min_price" placeholder="0" value="{{ request.GET.min_price }}">
+                    
+                    <label for="max_price">Prix max:</label>
+                    <input type="number" name="max_price" id="max_price" placeholder="1000000" value="{{ request.GET.max_price }}">
+                </div>
+                <button type="submit" class="filter-btn">Filtrer</button>
+            </div>
+        </form>
+    </header>
+
+    <!-- Slider Section -->
+    <section class="slider-section">
+        <div class="slider">
+            <a href="#" class="slide">
+                <img src="{% static 'assets/default/image1.jpeg' %}" alt="Tech Image 1" class="slide-image">
+                <div class="slide-content">
+                    <h3>Découvrez nos offres</h3>
+                    <p>Les meilleurs prix près de chez vous</p>
+                </div>
+            </a>
+            <a href="#" class="slide">
+                <img src="{% static 'assets/default/image2.jpeg' %}" alt="Tech Image 2" class="slide-image">
+                <div class="slide-content">
+                    <h3>Produits locaux</h3>
+                    <p>Soutenez vos commerces de proximité</p>
+                </div>
+            </a>
+            <a href="#" class="slide">
+                <img src="{% static 'assets/default/image3.jpeg' %}" alt="Tech Image 3" class="slide-image">
+                <div class="slide-content">
+                    <h3>Prix compétitifs</h3>
+                    <p>Comparez et économisez</p>
+                </div>
+            </a>
+        </div>
+        <button class="slider-btn prev">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+        </button>
+        <button class="slider-btn next">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+        </button>
+    </section>
+
+    <main class="main-content">
+        {% if query or request.GET.category or request.GET.min_price or request.GET.max_price %}
+            <div class="comparaisons">
+                <div class="comparaison">
+                    <div class="static moins">
+                        <span>{{ cheaper_products|length }} - Chère(s)</span>
+                        {% if cheaper_products %}
+                            <span>{{ cheaper_products.0.prix }} FCFA</span>
+                        {% endif %}
+                    </div>
+                    <div class="static plus">
+                        <span>{{ expensive_products|length }} + Chère(s)</span>
+                        {% if expensive_products %}
+                            {% with last_expensive_product=expensive_products|last %}
+                                <span>{{ last_expensive_product.prix }} FCFA</span>
+                            {% endwith %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        <section class="products-grid">
+            {% if products %}
+                {% for product in products %}
+                    <article class="product-card">
+                        <img src="{{ product.image.url }}" alt="{{ product.title }}" class="product-image">
+                        <div class="product-info">
+                            <span class="vendor-badge {{ product.category|lower }}">{{ product.category }}</span>
+                            <h3 class="product-title">{{ product.title }}</h3>
+                            <p class="product-price">{{ product.prix }} Fcfa</p>
+                            <a href="{% url 'product_detail' product_id=product.id %}" class="search-btn">
+                                Visiter le Produit
+                            </a>
+                        </div>
+                    </article>
+                {% endfor %}
+            {% else %}
+                <h1 class="section_title"><i class="fa fa-product-hunt gold"></i>0 Produits trouvés</h1>
+            {% endif %}
+        </section>
+
+        {% if recommended_products %}
+            <section class="recommendations">
+                <h2>Recommandations pour vous</h2>
+                <div class="product-grid">
+                    {% for product in recommended_products %}
+                        <div class="product-card">
+                            <img src="{{ product.image.url }}" alt="{{ product.title }}" class="product-image">
+                            <div class="product-info">
+                                <span class="vendor-badge {{ product.category|lower }}">{{ product.category }}</span>
+                                <h3 class="product-title">{{ product.title }}</h3>
+                                <p class="price">{{ product.prix }} FCFA</p>
+                                <a href="{% url 'product_detail' product.id %}" class="btn">Voir détails</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </section>
+        {% endif %}
+
+        {% if price_analysis %}
+            <section class="price-analysis">
+                <h2>Analyse des prix</h2>
+                <div class="price-trends">
+                    {% for category, stats in price_analysis.trends.items %}
+                        <div class="category-stats">
+                            <h3>{{ category }}</h3>
+                            <p><strong>Prix moyen :</strong> {{ stats.mean }} FCFA</p>
+                            <p><strong>Prix minimum :</strong> {{ stats.min }} FCFA</p>
+                            <p><strong>Prix maximum :</strong> {{ stats.max }} FCFA</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </section>
+        {% endif %}
+    </main>
+
+{% endblock %}

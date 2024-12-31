@@ -1,0 +1,204 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link type="images/jpg" rel="icon" href="{% static 'assets/logo/sunprice.png' %}">
+
+    <!-- Box Icone -->
+    <link rel="stylesheet" href="{% static 'assets/icones/font-awesome/css/font-awesome.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/icones/font-awesome/css/font-awesome.min.css' %}">
+
+    <!-- Style -->
+    <link rel="stylesheet" href="{% static 'assets/ressources/styles/SunPrice.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/ressources/styles/sidebar.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/ressources/styles/search.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/ressources/styles/main.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/ressources/styles/slider.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/ressources/styles/footer.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/ressources/styles/responsive.css' %}">
+    
+
+    <title> SunPrice </title>
+</head>
+<body>
+
+    <!-- PC Navigation -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="#" class="logo">
+                <h1><span class="logo-sun">Sun</span><span class="logo-price">Price</span></h1>
+            </a>
+            
+            <div class="nav-links">
+                
+                {% with request.resolver_match.url_name as url_name %}
+                    <a href="home" class="nav-link {% if url_name == 'home' %} active-link {% endif %}">Produits</a>
+                    <a href="super_marcher" class="nav-link {% if url_name == 'super_marcher' %} active-link {% endif %}">Supermarchés</a>
+                    <a href="boutique" class="nav-link {% if url_name == 'boutique' %} active-link {% endif %}">Boutiques</a>
+                    <a href="particulier" class="nav-link {% if url_name == 'particulier' %} active-link {% endif %}">Particuliers</a>
+                    <a href="imobilier" class="nav-link {% if url_name == 'imobilier' %} active-link {% endif %}">Immobiliers</a>
+                    <a href="facture_users" class="nav-link {% if url_name == 'facture_users' %} active-link {% endif %}">Factures</a>
+                {% endwith %}
+
+            </div>
+
+            <div class="nav-actions">
+                <a href="#search" class="icon-btn" aria-label="Rechercher">
+                    <i class="fa fa-search"></i>
+                </a>
+
+                {% if request.user.rôle == 'acheteur' %}
+                <a href="facture" class="icon-btn" aria-label="facture">
+                    <i class="fa fa-list-alt"></i>
+                </a>
+                
+                {% endif %}
+                <a class="icon-btn" aria-label="Compte">
+                    <svg class="menu-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" onclick="toggle()">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </a>
+
+                <div class="profil-dropdown-list">
+                    <div class="dropdownh-header">
+                        <div class="user">
+                            <a href="#" class="icon-btn" aria-label="Compte">
+                                {% if user.profile_image and user.profile_image.url %}
+                                    <img src="{{ user.profile_image.url }}">
+                                    {% else %}
+                                        <img src="{% static 'assets/default/user.png' %}" class="profile-image">
+                                {% endif %}
+            
+                                <h5>
+                                    {{ user.first_name }} {{ user.last_name }} <br>
+                                    Votre statut:<span> {{ user.rôle }}</span>
+                                </h5>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="sidebar-content">
+                        {% if request.user.rôle != 'acheteur' %}
+                            <a href="product" class="sidebar-link">Poster un produit</a>
+                        {% endif %}
+
+                        {% if request.user.rôle == 'acheteur' %}
+                            <a href="facture" class="sidebar-link">Votre facture</a>
+                        {% endif %}
+                        
+                        <a href="#" class="sidebar-link">Historiques</a>
+                        <a href="#" class="sidebar-link">Particuliers</a>
+
+                        <a href="{% url 'logout' %}" class="sidebar-link">Déconnexion</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mob-actions">
+                <div class="search">
+                    <a href="#search">
+                        <i class="fa fa-search"></i>
+                    </a>
+                </div>
+
+                <div class="notifications noti-btn" onclick="toggleNoti()" tabindex="0" role="button" aria-label="Afficher les notifications">
+                    <i class="fa fa-bell"></i>
+                </div>
+
+                <div class="notif-dropdown-list">
+                    <div class="notification-header">
+                        <h3>Notifications</h3>
+                        <span class="close-notification">&times;</span>
+                    </div>
+                    <div class="notification-body">
+                        <a href="#" class="notification product-like" aria-label="#">
+                            <span class="notification-user">Oumar Thioubou</span>
+                            <span class="notification-action">a aimé votre produit</span>
+                        </a>
+                        <button class="notification-delete" aria-label="Supprimer la notification">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <button class="menu-btn" aria-label="Menu">
+                <svg class="menu-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Bottom Navigation -->
+    <nav class="mobile-nav">
+        <div class="mobile-nav-links">
+            
+            {% with request.resolver_match.url_name as url_name %}
+                <a href="home" class="mobile-nav-link {% if url_name == 'home' %} active-link {% endif %}"> <i class="fa fa-product-hunt icone"></i> <span class="menus">Produits</span></a>
+                <a href="super_marcher" class="mobile-nav-link {% if url_name == 'super_marcher' %} active-link {% endif %}"><i class="fa fa-shopping-cart icone"></i><span class="menus">Supermarchés</span></a>
+                <a href="boutique" class="mobile-nav-link {% if url_name == 'boutique' %} active-link {% endif %}"><i class="fa fa-shopping-bag icone"></i><span class="menus">Boutiques</span></a>
+                <a href="particulier" class="mobile-nav-link {% if url_name == 'particulier' %} active-link {% endif %}"><i class="fa fa-handshake-o icone"></i><span class="menus">Particuliers</span></a>
+                <a href="imobilier" class="mobile-nav-link {% if url_name == 'imobilier' %} active-link {% endif %}"><i class="fa fa-home icone"></i><span class="menus">Imobilier</span></a>
+                <a href="facture_users" class="mobile-nav-link {% if url_name == 'facture_users' %} active-link {% endif %}"><i class="fa fa-list-alt icone"></i><span class="menus">Factures</span></a>
+            {% endwith %}
+
+        </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="side-header">
+            <div class="user">
+                <a href="#" class="icon-btn" aria-label="Compte">
+                    {% if user.profile_image and user.profile_image.url %}
+                        <img src="{{ user.profile_image.url }}">
+                        {% else %}
+                            <img src="{% static 'assets/default/user.png' %}" class="profile-image">
+                    {% endif %}
+
+                    <h5>
+                        {{ user.first_name }} {{ user.last_name }} <br>
+                        Votre statut:<span> {{ user.rôle }}</span>
+                    </h5>
+                </a>
+            </div>
+            <div class="sidebar-close" aria-label="Fermer le menu">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </div>
+        </div>
+        <div class="sidebar-content">
+            <a href="/" class="sidebar-link">Accueil</a>
+            <a href="/supermarches" class="sidebar-link">Supermarchés</a>
+            <a href="/boutiques" class="sidebar-link">Boutiques</a>
+            <a href="/particuliers" class="sidebar-link">Particuliers</a>
+            <a href="/superettes" class="sidebar-link">Superettes</a>
+        </div>
+
+        <div class="side-bottom">
+            <a href="#" class="sidebar-link"> <i class="fa fa-sign-out"></i> Déconnexion</a>
+        </div>
+    </div>
+
+    <!-- Overlay -->
+    <div class="overlay"></div>
+
+
+    {% block contenu %}
+
+    {% endblock %}
+
+    {% include 'footer/footer.html' %}
+
+    <script src="{% static 'assets/ressources/scripts/SunPrice.js' %}"></script>
+
+</body>
+</html>

@@ -1,0 +1,169 @@
+{% extends 'auth/layouts/forms.html' %}
+{% load static %}
+
+{% block Authentification %}
+
+<style>
+    .inputs {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    .inputs i {
+        margin-right: 10px;
+        min-width: 20px;
+    }
+
+    .inputs .field {
+        flex: 1;
+    }
+</style>
+
+<div class="container">
+    <div class="bg" 
+style="background: url('{% static 'assets/default/image1.jpeg' %}') no-repeat center; background-size: cover;
+            z-index: -1; content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        left: 0;
+        top: 0; background-size: cover;
+        filter: blur(30px);
+        z-index: -1;"></div>
+
+    <div class="contact-box">
+        <div class="left">
+            <img src="{% static 'assets/default/image1.jpeg' %}">
+            <div class="text-content">
+                <h3><span>Sun</span>Price</h3>
+                <p>Les meilleurs prix près de chez vous!</p>
+            </div>
+        </div>
+        <form method="POST" action="/register" class="right">
+            {% csrf_token %}
+            <h2>Inscription</h2>
+            
+            {% if form.errors %}
+                <div class="alert alert-danger">
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <input type="hidden" name="latitude" id="latitude">
+            <input type="hidden" name="longitude" id="longitude">
+
+            <div class="inputs">
+                <i class="fa fa-briefcase"></i>
+                <select name="rôle" autocomplete="off" id="id_rôle" class="field">
+                
+                    <option value="acheteur" selected="">Acheteur</option>
+                
+                    <option value="particulier">Particulier</option>
+                
+                    <option value="boutiques">Boutiques</option>
+                
+                    <option value="supermarket">Super-Marché</option>
+                
+                    <option value="imobilier">Immobilier</option>
+                
+                </select>
+            </div>
+
+            <div class="inputs">
+                <i class="fa fa-transgender"></i>
+                <select name="genre" autocomplete="off" id="id_genre" class="field">
+                    <option value="homme">Homme</option>
+                
+                    <option value="femme">Femme</option>
+                
+                </select>
+            </div>
+
+            <div class="inputs">
+                <i class="fa fa-user-secret"></i>
+                <input type="text" name="username" autocomplete="off" autofocus="" required="" id="id_username" class="field" placeholder="Votre nom d'utilisateur">
+            </div>
+
+            <div class="inputs">
+                <i class="fa fa-shopping-bag"></i>
+                <input type="text" name="nom_boutique" autocomplete="off" id="id_nom_boutique" class="field" placeholder="Nom de votre boutique">
+            </div>
+
+            <div class="inputs">
+                <i class="fa fa-envelope"></i>
+                <input type="email" name="email" autocomplete="off" maxlength="320" required="" id="id_email" class="field" placeholder="Votre email">
+            </div>
+            <div class="inputs">
+                <i class="fa fa-unlock"></i>
+                <input type="password" name="password1" autocomplete="off" required="" id="id_password1" class="field" placeholder="Votre mot de passe">
+            </div>
+            <div class="inputs">
+                <i class="fa fa-lock"></i>
+                <input type="password" name="password2" autocomplete="off" required="" id="id_password2" class="field" placeholder="Confirmer votre mot de passe">
+            </div>
+
+            Accepter les termes et conditions <input type="checkbox" name="terms" id="terms" class="field">
+
+            <button type="submit" class="btn">S'inscrire</button>
+
+            <div class="options">
+                <p>Déjà un compte? &nbsp; <a href="/">Se connecter</a></p>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            document.getElementById('latitude').value = position.coords.latitude;
+            document.getElementById('longitude').value = position.coords.longitude;
+        });
+    } else {
+        alert("La géolocalisation n'est pas supportée par ce navigateur.");
+    }
+</script>
+
+<script>
+    // Get references to the role select and boutique input elements
+    const roleSelect = document.getElementById('id_rôle');
+    const boutiqueInput = document.getElementById('id_nom_boutique');
+    const boutiqueDiv = boutiqueInput.parentElement;
+
+    // Function to handle visibility and required state
+    function handleBoutiqueField() {
+        if (roleSelect.value === 'acheteur') {
+            boutiqueDiv.style.visibility = 'hidden';
+            boutiqueDiv.style.position = 'absolute';
+            boutiqueDiv.style.opacity = '0';
+            boutiqueInput.required = false;
+            boutiqueInput.value = ''; // Clear the value when hidden
+        } else {
+            boutiqueDiv.style.visibility = 'visible';
+            boutiqueDiv.style.position = 'relative';
+            boutiqueDiv.style.opacity = '1';
+            boutiqueInput.required = true;
+        }
+    }
+
+    // Add event listener for changes to the role select
+    roleSelect.addEventListener('change', handleBoutiqueField);
+
+    // Call the function initially to set the correct state
+    handleBoutiqueField();
+
+    // Form validation
+    document.querySelector('form').addEventListener('submit', function(e) {
+        if (roleSelect.value !== 'acheteur' && !boutiqueInput.value.trim()) {
+            e.preventDefault();
+            alert('Le nom de la boutique est obligatoire pour ce rôle');
+        }
+    });
+</script>
+
+{% endblock %}

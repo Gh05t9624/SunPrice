@@ -1,0 +1,413 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin</title>
+
+    <link type="images/jpg" rel="icon" href="{% static 'assets/logo/sunprice.png' %}">
+
+    <!-- Link Icone -->
+    <link rel="stylesheet" href="{% static 'admin/icones/font-awesome/css/font-awesome.css' %}">
+    <link rel="stylesheet" href="{% static 'admin/icones/font-awesome/css/font-awesome.min.css' %}">
+
+    <!-- Link Css -->
+    <link rel="stylesheet" href="{% static 'admin/ressources/styles/dash_admin.css' %}">
+    <link rel="stylesheet" href="{% static 'admin/ressources/styles/admin-sidebarR.css' %}">
+    <link rel="stylesheet" href="{% static 'admin/ressources/styles/odometer-theme-car.css' %}">
+
+</head>
+<body>
+
+    <header class="header" id="header">
+        <nav class="nav cont">
+            <div class="numbers-users">
+                <div id="odometer" class="odometer">000000</div> &nbsp;
+                <h2>Les trafics d'aujourd'hui</h2>
+            </div>
+
+            <div class="infos-admin">
+                <img src="assets/images/pic-4.png" onclick="toggle()">
+                <ul class="profil-dropdown-list">
+                    <li class="profil-dropdown-list-item">
+                        <a href="#">
+                            <i class="fa fa-user"></i>
+                            Votre Profil
+                        </a>
+                    </li>
+
+                    <li class="profil-dropdown-list-item">
+                        <a href="#">
+                            <i class="fa fa-map"></i>
+                            Votre Localisation
+                        </a>
+                    </li>
+
+                    <li class="profil-dropdown-list-item">
+                        <a href="#">
+                            <i class="fa fa-line-chart"></i>
+                            Analyser votre Compte
+                        </a>
+                    </li>
+
+                    <li class="profil-dropdown-list-item">
+                        <a href="#">
+                            <i class="fa fa-sliders"></i>
+                            Paramétres
+                        </a>
+                    </li>
+
+                    <li class="profil-dropdown-list-item">
+                        <a href="#">
+                            <i class="fa fa-question-circle"></i>
+                            Aide Support
+                        </a>
+                    </li>
+
+                    <hr>
+
+                    <li class="profil-dropdown-list-item">
+                        <a href="{% url 'logout' %}">
+                            <i class="fa fa-sign-out"></i>
+                            Déconnexion
+                        </a>
+                    </li>
+
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+
+    <main>
+        
+        <section class="datas">
+            <h1 class="section_title"><i class="fa fa-users"></i> Taux d'Utilisateurs (100%) </h1>
+            <div class="data-users">
+                <a href="#" class="circle data-users-card" data-degree="10" data-color="#04fc43">
+                    <h2 class="number"><span>%</span> </h2>
+                    <h4>175,999 <br> <br> Admins </h4>
+                </a>
+
+                <a href="#" class="circle data-users-card" data-degree="26" data-color="#fee800">
+                    <h2 class="number"><span>%</span> </h2>
+                    <h4>175 <br> <br> Boutiques</h4>
+                </a>
+
+                <a href="#" class="circle data-users-card" data-degree="38" data-color="#ff2972">
+                    <h2 class="number"><span>%</span> </h2>
+                    <h4>999 <br> <br> Super-marchés </h4>
+                </a>
+
+                <a href="#" class="circle data-users-card" data-degree="40" data-color="#045FFCFF ">
+                    <h2 class="number"><span>%</span> </h2>
+                    <h4>1000 <br> <br> Superettes</h4>
+                </a>
+
+                <a href="#" class="circle data-users-card" data-degree="40" data-color="#04FCFCFF">
+                    <h2 class="number"><span>%</span> </h2>
+                    <h4>1000 <br> <br> Particuliers</h4>
+                </a>
+
+                <a href="#" class="circle data-users-card" data-degree="40" data-color="#9104FCFF">
+                    <h2 class="number"><span>%</span> </h2>
+                    <h4>1000 <br> <br> Stations-services</h4>
+                </a>.
+
+            </div>
+
+            <h1 class="section_title"><i class="fa fa-line-chart"></i> Taux de trafics</h1>
+            <div class="data-chart">
+                <div id="chart"></div>
+            </div>
+
+            <h1 class="section_title"><i class="fa fa-money"></i> Revenus </h1>
+            <div class="money-grid">
+                <a href="#" class="money-card">
+                    <div class="icone-data">
+                        <i class="fa fa-line-chart"></i>
+                    </div>
+                    <div class="data-moneys">
+                        <h2>Aujourd'hui</h2>
+                        <p> <span>$</span> 2000</p>
+                    </div>
+                </a>
+
+                <a href="#" class="money-card">
+                    <div class="icone-data">
+                        <i class="fa fa-line-chart"></i>
+                    </div>
+                    <div class="data-moneys">
+                        <h2>Du mois</h2>
+                        <p> <span>$</span> 2000</p>
+                    </div>
+                </a>
+
+                <a href="#" class="money-card">
+                    <div class="icone-data">
+                        <i class="fa fa-line-chart"></i>
+                    </div>
+                    <div class="data-moneys">
+                        <h2>L'année</h2>
+                        <p> <span>$</span> 2000</p>
+                    </div>
+                </a>
+
+                <a href="#" class="money-card">
+                    <div class="icone-data">
+                        <i class="fa fa-line-chart"></i>
+                    </div>
+                    <div class="data-moneys">
+                        <h2>Devise de 1$</h2>
+                        <p> <span>FCFA</span> 650</p>
+                    </div>
+                </a>
+            </div>
+
+            <div class="moneys-card">
+                <h1 class="section_title"><i class="fa fa-money"></i> En FCFA </h1>
+                <div class="money-grid">
+                    <a href="#" class="money-card">
+                        <div class="icone-data">
+                            <i class="fa fa-line-chart"></i>
+                        </div>
+                        <div class="data-moneys">
+                            <h2>Aujourd'hui</h2>
+                            <p> 2000 <span>fcfa</span></p>
+                        </div>
+                    </a>
+    
+                    <a href="#" class="money-card">
+                        <div class="icone-data">
+                            <i class="fa fa-line-chart"></i>
+                        </div>
+                        <div class="data-moneys">
+                            <h2>Du mois</h2>
+                            <p> 2000 <span>fcfa</span></p>
+                        </div>
+                    </a>
+    
+                    <a href="#" class="money-card">
+                        <div class="icone-data">
+                            <i class="fa fa-line-chart"></i>
+                        </div>
+                        <div class="data-moneys">
+                            <h2>L'année</h2>
+                            <p> 2000 <span>fcfa</span></p>
+                        </div>
+                    </a>
+    
+                    <a href="#" class="money-card">
+                        <div class="icone-data">
+                            <i class="fa fa-line-chart"></i>
+                        </div>
+                        <div class="data-moneys">
+                            <h2>L'année en $</h2>
+                            <p> <span>$</span> 650</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            
+
+            <h1 class="section_title"><i class="fa fa-money"></i> Analyse des Revenus en FCFA </h1>
+            <div class="data-grid">
+                <a class="data-card">
+                    <div id="chart-jrs"></div>
+                    <center>
+                        <h2 class="jours">Jours</h2>
+                    </center>
+                </a>
+
+                <a class="data-card">
+                    <div id="chart-an"></div>
+                    <center>
+                        <h2 class="years">Année</h2>
+                    </center>
+                </a>
+            </div>
+        </section>
+
+        <section class="sidebar-left-actu">
+            <div class="sidebarLeft-actu">
+                <div class="sidebar-profile-box calendar">
+                    <div class="calendar-header">
+                        <span class="month-picker" id="month-picker"></span>
+                        <div class="year-picker">
+                            <span class="year-change" id="prev-year">
+                                <pre><</pre>
+                            </span>
+                            <span id="year">2021</span>
+                            <span class="year-change" id="next-year">
+                                <pre>></pre>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="calendar-body">
+                        <div class="calendar-week-day">
+                            <div>Lun</div>
+                            <div>Mar</div>
+                            <div>Mer</div>
+                            <div>Jeu</div>
+                            <div>Ven</div>
+                            <div>Sam</div>
+                            <div>Dim</div>
+                        </div>
+                        <div class="calendar-days"></div>
+                    </div>
+                    <div class="month-list"></div>
+                </div>
+
+                <div class="sidebar-profile-box">
+                    <div class="sidebar-share-profile">
+                        <h2>Horloge:</h2>
+        
+                        <div class="time">
+                            <div class="time-colon">
+                                <div class="time-text">
+                                  <span class="num hour_num">08</span>
+                                  <span class="text primary">Hours</span>
+                                </div>
+                                <span class="colon">:</span>
+                                <div class="time-colon">
+                                    <div class="time-text">
+                                    <span class="num min_num">45</span>
+                                    <span class="text primary">Minutes</span>
+                                    </div>
+                                    <span class="colon">:</span>
+                                </div>
+                                <div class="time-colon">
+                                    <div class="time-text">
+                                    <span class="num sec_num">06</span>
+                                    <span class="text primary">Seconds</span>
+                                    </div>
+                                    <span class="am_pm primary">AM</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <script src="{% static 'admin/dist/apexcharts.min.js' %}"></script>
+    <script src="{% static 'admin/ressources/scripts/dash_admin.js' %}"></script>
+    <script src="{% static 'admin/ressources/scripts/dash-side.js' %}"></script>
+    <script src="{% static 'admin/ressources/scripts/odometer.min.js' %}"></script>
+
+    <script>
+        let value  = 175999;
+        setInterval( () => {
+            odometer.innerHTML = value;
+        });
+
+        document.addEventListener("DOMContentLoaded", function (event) {
+            let circle = document.querySelectorAll('.circle');
+            circle.forEach(function(progress) {
+                let degree = 0;
+                var targetDegree = parseInt(progress.getAttribute('data-degree'));
+                let color = progress.getAttribute('data-color');
+                let number = progress.querySelector('.number');
+
+                var interval = setInterval(function() {
+                    degree += 1;
+                    if (degree > targetDegree) {
+                        clearInterval(interval);
+                        return;
+                    }
+
+                    progress.style.background = `conic-gradient(${color} ${degree}%, #222 0%)`;
+                    number.innerHTML = degree + `<span>%</span>`;
+                    number.style.color = color;
+                },50)
+            })
+        });
+
+        var options = {
+            series: [{
+            name: '2023',
+            data: [31, 40, 28, 51, 42, 109, 100, 20, 90, 18, 14, 20]
+          }, {
+            name: '2024',
+            data: [11, 32, 45, 32, 34, 52, 41, 25, 95, 19, 17, 25]
+          }],
+            chart: {
+            height: 350,
+            type: 'area'
+          },
+          dataLabels: {
+            enabled: false
+          },
+          stroke: {
+            curve: 'smooth'
+          },
+          xaxis: {
+            type: 'mounth',
+            categories: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Aôut', 'Septembre', 'Octobre', 'Novembre', 'Décembre']
+          },
+          
+          };
+        
+        var chart = new ApexCharts(document.querySelector("#chart"), options);
+          chart.render();
+
+
+        var options = {
+            series: [{
+            name: 'Revenus',
+            data: [31, 40, 28, 51, 42, 109, 100, 20, 90, 18, 14, 20],
+            color: '#fb5151'
+          }],
+            chart: {
+            height: 350,
+            type: 'area'
+          },
+          dataLabels: {
+            enabled: false
+          },
+          stroke: {
+            curve: 'smooth'
+          },
+          xaxis: {
+            type: 'mounth',
+            categories: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Aôut', 'Septembre', 'Octobre', 'Novembre', 'Décembre']
+          },
+          
+          };
+        
+        var chart = new ApexCharts(document.querySelector("#chart-an"), options);
+          chart.render();
+
+        var options = {
+            series: [{
+            name: 'Revenus',
+            data: [110, 32, 45, 32, 34, 52, 41],
+            color: 'green'
+          }],
+            chart: {
+            height: 350,
+            type: 'area'
+          },
+          dataLabels: {
+            enabled: false
+          },
+          stroke: {
+            curve: 'smooth'
+          },
+          xaxis: {
+            type: 'mounth',
+            categories: ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche']
+          },
+          
+          };
+        
+        var chart = new ApexCharts(document.querySelector("#chart-jrs"), options);
+          chart.render();
+        
+        
+    </script>
+
+</body>
+</html>
