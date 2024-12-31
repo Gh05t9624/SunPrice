@@ -136,6 +136,22 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'SunApp/static')]
 MEDIA_URL = '/SunApp/images/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'SunApp/images/')
 
+# Configuration pour l'envoi d'emails
+# Pour le développement
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# Configuration SMTP pour la production (à décommenter et configurer)
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'  # Ou votre fournisseur SMTP
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = 'votre_email@sunprice.com'
+# EMAIL_HOST_PASSWORD = 'votre_mot_de_passe_app'
+# DEFAULT_FROM_EMAIL = 'SunPrice <noreply@sunprice.com>'
+
+# Configuration de la réinitialisation de mot de passe
+PASSWORD_RESET_TIMEOUT_DAYS = 1  # Délai de validité du lien de réinitialisation
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 

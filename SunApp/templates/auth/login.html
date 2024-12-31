@@ -41,8 +41,7 @@ style="background: url('{% static 'assets/default/image1.jpeg' %}') no-repeat ce
             <button type="submit" class="btn">Se connecter</button>
 
             <div class="options">
-                {% comment %} {% url 'reset_password' %} {% endcomment %}
-                <p>Mot de passe oublié? &nbsp; <a href="#">Cliquez ici</a></p>
+                <p>Mot de passe oublié? &nbsp; <a href="{% url 'password_reset' %}">Cliquez ici</a></p>
                 <p>Pas de compte? &nbsp; <a href="register">S'inscrire</a></p>
             </div>
         </form>
