@@ -1,0 +1,192 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Utilisateurs Suivis</title>
+
+    <link rel="stylesheet" href="{% static 'assets/ressources/styles/main.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/ressources/styles/search.css' %}">
+
+</head>
+<body>
+    <div class="container">
+        <header class="hero" id="search">
+            <form class="hero-content" id="followedUsersSearchForm">
+                <h2>Découvrez vos utilisateurs suivis</h2>
+                <div class="search-bar">
+                    <input 
+                        type="search" 
+                        id="searchInput" 
+                        name="username" 
+                        placeholder="Rechercher un utilisateur..." 
+                        class="form-control"
+                    >
+                    <button class="search-btn-search" type="button" id="searchButton">Rechercher</button>
+                </div>
+                <div class="filters">
+                    <select 
+                        name="role" 
+                        id="roleFilter" 
+                        class="filter-select form-select"
+                    >
+                        <option value="">Tous les rôles</option>
+                        <option value="particulier">Particulier</option>
+                        <option value="boutiques">Boutiques</option>
+                        <option value="supermarket">Super-Marché</option>
+                        <option value="imobilier">Imobilier</option>
+                    </select>
+                    
+                    <div class="additional-filters">
+                        <div class="filter-item">
+                            <label for="followedSince">Suivi depuis:</label>
+                            <input 
+                                type="date" 
+                                id="followedSince" 
+                                name="followed_since" 
+                                class="form-control"
+                            >
+                        </div>
+                    </div>
+                    
+                    <button type="button" class="filter-btn" id="applyFilters">Filtrer</button>
+                </div>
+            </form>
+        </header>
+
+        <div id="usersContainer" class="users-grid">
+            {% if followed_users %}
+                {% for user in followed_users %}
+                    <div class="user-card" data-role="{{ user.get_rôle_display|lower }}" data-followed-date="{{ user.followed_since }}">
+                        {% if user.profile_image %}
+                            <img src="{{ user.profile_image.url }}" 
+                                 alt="{{ user.username }}" 
+                                 class="user-card-image">
+                        {% else %}
+                            <div class="user-card-placeholder">
+                                {{ user.username|slice:":2"|upper }}
+                            </div>
+                        {% endif %}
+                        
+                        <div class="user-card-content">
+                            <h2 class="user-card-title">{{ user.username }}</h2>
+                            <p class="user-card-info">
+                                <strong>Rôle :</strong> {{ user.get_rôle_display }}<br>
+                                <strong>Pays :</strong> {{ user.pays|default:"Non renseigné" }}<br>
+                                <strong>Ville :</strong> {{ user.ville|default:"Non renseigné" }}
+                            </p>
+                            <div class="user-card-actions">
+                                <a href="{% url 'user_detail' user.id %}" class="btn btn-primary">Voir Profil</a>
+                                <form method="post" action="{% url 'toggle_follow' user.id %}" class="d-inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger">Ne plus suivre</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state">
+                    <h3>Vous ne suivez encore aucun utilisateur</h3>
+                    <p>Explorez et suivez des profils qui vous intéressent !</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        // Script pour gérer dynamiquement la suppression des utilisateurs suivis
+        document.addEventListener('DOMContentLoaded', () => {
+            const forms = document.querySelectorAll('form[action^="/toggle_follow/"]');
+            
+            forms.forEach(form => {
+                form.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    
+                    try {
+                        const response = await fetch(form.action, {
+                            method: 'POST',
+                            body: new FormData(form),
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        });
+
+                        if (response.ok) {
+                            // Supprimer la carte de l'utilisateur
+                            form.closest('.user-card').remove();
+
+                            // Vérifier s'il reste des utilisateurs
+                            const container = document.getElementById('usersContainer');
+                            if (container.children.length === 0) {
+                                container.innerHTML = `
+                                    <div class="empty-state">
+                                        <h3>Vous ne suivez encore aucun utilisateur</h3>
+                                        <p>Explorez et suivez des profils qui vous intéressent !</p>
+                                    </div>
+                                `;
+                            }
+                        }
+                    } catch (error) {
+                        console.error('Erreur lors de la suppression du suivi:', error);
+                    }
+                });
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const roleFilter = document.getElementById('roleFilter');
+            const followedSinceFilter = document.getElementById('followedSince');
+            const userCards = document.querySelectorAll('.user-card');
+            const usersGrid = document.querySelector('.users-grid');
+
+            function filterUsers() {
+                const searchTerm = searchInput.value.toLowerCase().trim();
+                const selectedRole = roleFilter.value.toLowerCase();
+                const followedSince = followedSinceFilter.value;
+                let visibleCardsCount = 0;
+
+                userCards.forEach(card => {
+                    const username = card.querySelector('.user-card-title').textContent.toLowerCase();
+                    const userRole = card.getAttribute('data-role');
+                    const followDate = card.getAttribute('data-followed-date');
+
+                    const nameMatch = username.includes(searchTerm);
+                    const roleMatch = selectedRole === '' || userRole === selectedRole;
+                    const dateMatch = !followedSince || followDate >= followedSince;
+
+                    if (nameMatch && roleMatch && dateMatch) {
+                        card.style.display = 'block';
+                        visibleCardsCount++;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+
+                // Gestion de l'affichage si aucun résultat
+                const noResultsElement = document.getElementById('no-results');
+                if (visibleCardsCount === 0) {
+                    if (!noResultsElement) {
+                        const noResultsDiv = document.createElement('div');
+                        noResultsDiv.id = 'no-results';
+                        noResultsDiv.className = 'no-results';
+                        noResultsDiv.innerHTML = `
+                            <h3>Aucun utilisateur trouvé</h3>
+                            <p>Essayez d'autres critères de recherche</p>
+                        `;
+                        usersGrid.appendChild(noResultsDiv);
+                    }
+                } else if (noResultsElement) {
+                    noResultsElement.remove();
+                }
+            }
+
+            searchInput.addEventListener('input', filterUsers);
+            roleFilter.addEventListener('change', filterUsers);
+            followedSinceFilter.addEventListener('change', filterUsers);
+        });
+    </script>
+</body>
+</html>

@@ -9,7 +9,7 @@ from django.contrib import messages
 from django.core.paginator import Paginator
 from django_filters import rest_framework as filters
 
-from .models import CustomUser, Notification, Product, Facture
+from .models import CustomUser, Notification, Product, Facture, Follow
 from django.db.models import Q
 import unicodedata
 from .ai_services.recommendation import ProductRecommender
@@ -571,17 +571,61 @@ def product_detail(request, product_id):
 
 def user_detail(request, user_id):
     user = get_object_or_404(CustomUser, pk=user_id)
-    products = Product.objects.filter(user=user)  # Récupère tous les produits de cet utilisateur
+    products = Product.objects.filter(user=user)
+    
+    # Vérifier si l'utilisateur connecté suit déjà cet utilisateur
+    is_following = False
+    if request.user.is_authenticated and request.user.rôle == 'acheteur':
+        is_following = Follow.objects.filter(follower=request.user, followed=user).exists()
 
-    return render(request, 'Details/details_user.html', {'user': user, 'products': products})
+    return render(request, 'Details/details_user.html', {
+        'user': user, 
+        'products': products,
+        'is_following': is_following
+    })
 
-def user_map_view(request):
-    user = request.user
-    context = {
-        'user_latitude': user.latitude,
-        'user_longitude': user.longitude,
-    }
-    return render(request, 'users/pages/user_map.html', context)
+@login_required
+def toggle_follow(request, user_id):
+    # Vérifier que l'utilisateur connecté a le rôle d'acheteur
+    if request.user.rôle != 'acheteur':
+        messages.error(request, "Vous n'êtes pas autorisé à suivre des utilisateurs.")
+        return redirect('user_detail', user_id=user_id)
+
+    followed_user = get_object_or_404(CustomUser, pk=user_id)
+    
+    # Ne pas permettre de se suivre soi-même
+    if request.user == followed_user:
+        messages.error(request, "Vous ne pouvez pas vous suivre vous-même.")
+        return redirect('user_detail', user_id=user_id)
+
+    # Vérifier si l'utilisateur est déjà suivi
+    existing_follow = Follow.objects.filter(follower=request.user, followed=followed_user)
+    
+    if existing_follow.exists():
+        # Déjà suivi, donc on arrête de suivre
+        existing_follow.delete()
+        messages.success(request, f"Vous avez arrêté de suivre {followed_user.username}.")
+    else:
+        # Commencer à suivre
+        Follow.objects.create(follower=request.user, followed=followed_user)
+        messages.success(request, f"Vous suivez maintenant {followed_user.username}.")
+
+    return redirect('user_detail', user_id=user_id)
+
+def followed_users(request):
+    # Vérifier que l'utilisateur est connecté et a le rôle d'acheteur
+    if not request.user.is_authenticated or request.user.rôle != 'acheteur':
+        messages.error(request, "Vous n'êtes pas autorisé à accéder à cette page.")
+        return redirect('home')
+
+    # Récupérer tous les utilisateurs suivis
+    followed_users = CustomUser.objects.filter(
+        followers__follower=request.user
+    ).distinct()
+
+    return render(request, 'Details/followed_users.html', {
+        'followed_users': followed_users
+    })
 
 def facture_detail(request, id):
     # Récupérer l'utilisateur associé à l'ID

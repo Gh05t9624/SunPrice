@@ -66,7 +66,14 @@
 			<ul>
 			  <li><a href="">produits postés</a></li>
 			</ul>
-			<button>Follow</button>
+			{% if request.user.is_authenticated and request.user.rôle == 'acheteur' and request.user != user %}
+				<form method="post" action="{% url 'toggle_follow' user.id %}">
+					{% csrf_token %}
+					<button type="submit" class="btn {% if is_following %}btn-danger{% else %}btn-primary{% endif %}">
+						{% if is_following %}Ne plus suivre{% else %}Suivre{% endif %}
+					</button>
+				</form>
+			{% endif %}
 		  </nav>
 
 		  <div class="photos">

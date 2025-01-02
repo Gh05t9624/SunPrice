@@ -59,7 +59,17 @@ class CustomUser(BaseAbstractUser):
         # Vous pouvez ajouter ici des contraintes spécifiques si nécessaire
         unique_together = ('email',)  # Conserver l'unicité de l'email si désiré
 
+class Follow(models.Model):
+    follower = models.ForeignKey(CustomUser, related_name='following', on_delete=models.CASCADE)
+    followed = models.ForeignKey(CustomUser, related_name='followers', on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        unique_together = ('follower', 'followed')
+        verbose_name_plural = 'Follows'
+
+    def __str__(self):
+        return f"{self.follower.username} follows {self.followed.username}"
     
 class Product(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)

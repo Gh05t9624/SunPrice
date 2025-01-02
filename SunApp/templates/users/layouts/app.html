@@ -90,9 +90,9 @@
                             <a href="facture" class="sidebar-link">Votre facture</a>
                         {% endif %}
                         
-                        <a href="#" class="sidebar-link">Historiques</a>
-                        <a href="#" class="sidebar-link">Particuliers</a>
-
+                        {% if request.user.is_authenticated and request.user.rôle == 'acheteur' %}
+                            <a href="{% url 'followed_users' %}" class="sidebar-link">Utilisateurs Suivis</a>
+                        {% endif %}
                         <a href="{% url 'logout' %}" class="sidebar-link">Déconnexion</a>
                     </div>
                 </div>

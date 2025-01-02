@@ -17,7 +17,6 @@ urlpatterns = [
     path('register', views.register, name='register'),
     path('logout', views.log_out, name='logout'),
     path('profil', views.profile, name='profil'),
-    path('user-map', views.user_map_view, name='user_map'),
     
     # ========== Pages Users ======================
     path('home', views.home, name='home'),
@@ -29,21 +28,23 @@ urlpatterns = [
     path('facture_users', views.facture_users, name='facture_users'),
     
     # ========== Pages de Notifications ======================
-    path('notifications/', views.notifications, name='notifications'),
-    path('notifications_view/', views.notifications_view, name='notifications_view'),
-    path('mark-notifications-as-read/', views.mark_notifications_as_read, name='mark_notifications_as_read'),
-    path('check_notifications/', views.check_notifications, name='check_notifications'),
+    path('notifications', views.notifications, name='notifications'),
+    path('notifications_view', views.notifications_view, name='notifications_view'),
+    path('mark-notifications-as-read', views.mark_notifications_as_read, name='mark_notifications_as_read'),
+    path('check_notifications', views.check_notifications, name='check_notifications'),
     
     # ========== Pages Admins ======================
-    path('SuperAdmin/', views.SuperAdmin, name='SuperAdmin'),
+    path('SuperAdmin', views.SuperAdmin, name='SuperAdmin'),
     
     # ========== Les Formulaires ================
-    path('product/', views.create_product, name='product'),
-    path('facture/', views.facture, name='facture'),
+    path('product', views.create_product, name='product'),
+    path('facture', views.facture, name='facture'),
     
     # ========== Details ================
     path('product/<int:product_id>/', views.product_detail, name='product_detail'),
     path('profiles/<int:user_id>', views.user_detail, name='user_detail'),
+    path('toggle_follow/<int:user_id>', views.toggle_follow, name='toggle_follow'),
+    path('followed-users/', views.followed_users, name='followed_users'),
     path('facture_detail/<int:id>/', views.facture_detail, name='facture_detail'),
     
     path('api/', include(router.urls)),

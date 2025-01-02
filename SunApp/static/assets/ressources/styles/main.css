@@ -728,6 +728,119 @@ h1, h2, h3, h4, h5, h6 {
     color: #F2A74B;
 }
 
+/* Users Grid */
+.users-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+.user-card {
+    background-color: var(--color-white);
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    border-radius: 0.5rem;
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.user-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.user-card-image {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    filter: brightness(0.9);
+}
+
+.user-card-placeholder {
+    background-color: var(--color-gray);
+    color: var(--color-white);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 250px;
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.user-card-content {
+    padding: 1rem;
+}
+
+.user-card-title {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    color: var(--color-yellow-dark);
+}
+
+.user-card-info {
+    color: var(--color-gray);
+    margin-bottom: 1rem;
+}
+
+.user-card-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.user-card-actions .btn {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.user-card-actions .btn-primary {
+    background-color: var(--color-yellow);
+    color: var(--color-white);
+}
+
+.user-card-actions .btn-primary:hover {
+    background-color: var(--color-yellow-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.user-card-actions .btn-danger {
+    background-color: #fde3e3;
+    color: #d21919;
+    border: 1px solid #f8c4c4;
+}
+
+.user-card-actions .btn-danger:hover {
+    background-color: #f8c4c4;
+    color: #a71d2a;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 1200px) {
+    .users-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .users-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
 @media (max-width: 767px) {
     .product-card
     {
