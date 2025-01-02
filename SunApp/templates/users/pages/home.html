@@ -1,6 +1,6 @@
 {% extends 'users/layouts/app.html' %}
-
 {% load static %}
+{% load humanize %}
 
 {% block contenu %}
 
@@ -14,9 +14,17 @@
             <div class="filters">
                 <select name="category" id="category-filter" class="filter-select">
                     <option value="">Toutes les catégories</option>
-                    {% for choice in Product.CATEGORY_CHOICES %}
+                    {% for choice in Product.product_categories %}
                         <option value="{{ choice.0 }}" {% if request.GET.category == choice.0 %}selected{% endif %}>{{ choice.1 }}</option>
                     {% endfor %}
+                </select>
+                <select name="type_propriete" id="type-propriete-filter" class="filter-select">
+                    <option value="">Tous les types de propriétés</option>
+                    <option value="appartement" {% if request.GET.type_propriete == 'appartement' %}selected{% endif %}>Appartement</option>
+                    <option value="maison" {% if request.GET.type_propriete == 'maison' %}selected{% endif %}>Maison</option>
+                    <option value="terrain" {% if request.GET.type_propriete == 'terrain' %}selected{% endif %}>Terrain</option>
+                    <option value="bureau" {% if request.GET.type_propriete == 'bureau' %}selected{% endif %}>Bureau</option>
+                    <option value="entrepot" {% if request.GET.type_propriete == 'entrepot' %}selected{% endif %}>Entrepôt</option>
                 </select>
                 <div class="price-filter">
                     <label for="min_price">Prix min:</label>
@@ -88,20 +96,53 @@
                 </div>
             </div>
         {% endif %}
+        
         <section class="products-grid">
-            {% if products %}
-                {% for product in products %}
-                    <article class="product-card">
-                        <img src="{{ product.image.url }}" alt="{{ product.title }}" class="product-image">
-                        <div class="product-info">
-                            <span class="vendor-badge {{ product.category|lower }}">{{ product.category }}</span>
-                            <h3 class="product-title">{{ product.title }}</h3>
-                            <p class="product-price">{{ product.prix }} Fcfa</p>
-                            <a href="{% url 'product_detail' product_id=product.id %}" class="search-btn">
-                                Visiter le Produit
-                            </a>
-                        </div>
-                    </article>
+            {% if page_obj %}
+                {% for item in page_obj %}
+                    {% if item.item_type == 'Product' %}
+                        <article class="product-card">
+                            {% if item.get_first_image %}
+                                <img src="{{ item.get_first_image.url }}" alt="{{ item.title }}" class="product-image">
+                            {% else %}
+                                <img src="{% static 'assets/default/placeholder.jpg' %}" alt="{{ item.title }}" class="product-image">
+                            {% endif %}
+                            <div class="product-info">
+                                <span class="vendor-badge {{ item.category|lower }}">{{ item.get_category_display }}</span>
+                                <h3 class="product-title">{{ item.title }}</h3>
+                                <p class="product-price">{{ item.prix }} Fcfa</p>
+                                <a href="{% url 'product_detail' product_id=item.id %}" class="search-btn">
+                                    Visiter le Produit
+                                </a>
+                            </div>
+                        </article>
+                    {% elif item.item_type == 'RealEstateProperty' %}
+                        <article class="product-card">
+                            {% if item.get_first_image %}
+                                <img src="{{ item.get_first_image.url }}" alt="{{ item.titre }}" class="product-image">
+                            {% else %}
+                                <img src="{% static 'assets/default/placeholder.jpg' %}" alt="{{ item.titre }}" class="product-image">
+                            {% endif %}
+                            <div class="product-info">
+                                <h3>{{ item.titre }}</h3>
+                                <div class="product-details">
+                                    <span class="category">{{ item.type_propriete }} à {{ item.type_transaction }}</span>
+                                    <span class="price">{{ item.prix|intcomma }} FCFA</span>
+                                </div>
+                                <div class="product-location">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span>{{ item.ville }}, {{ item.quartier }}</span>
+                                </div>
+                                <div class="product-meta">
+                                    <span>Superficie : {{ item.superficie }} m²</span>
+                                    {% if item.type_propriete == 'maison' %}
+                                        <span>Terrain : {{ item.superficie_terrain }} m²</span>
+                                    {% endif %}
+                                </div>
+                                <a href="{% url 'real_estate_detail' item.id %}" class="search-btn">Voir les détails</a>
+                            </div>
+                        </article>
+                    {% endif %}
                 {% endfor %}
             {% else %}
                 <h1 class="section_title"><i class="fa fa-product-hunt gold"></i>0 Produits trouvés</h1>
@@ -114,7 +155,11 @@
                 <div class="product-grid">
                     {% for product in recommended_products %}
                         <div class="product-card">
-                            <img src="{{ product.image.url }}" alt="{{ product.title }}" class="product-image">
+                            {% if product.get_first_image %}
+                                <img src="{{ product.get_first_image.url }}" alt="{{ product.title }}" class="product-image">
+                            {% else %}
+                                <img src="{% static 'assets/default/placeholder.jpg' %}" alt="{{ product.title }}" class="product-image">
+                            {% endif %}
                             <div class="product-info">
                                 <span class="vendor-badge {{ product.category|lower }}">{{ product.category }}</span>
                                 <h3 class="product-title">{{ product.title }}</h3>
@@ -144,4 +189,47 @@
         {% endif %}
     </main>
 
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const categoryFilter = document.getElementById('category-filter');
+        const typeProprieteFilter = document.getElementById('type-propriete-filter');
+        
+        categoryFilter.addEventListener('change', function() {
+            // Récupérer les paramètres existants de l'URL
+            const urlParams = new URLSearchParams(window.location.search);
+            
+            // Mettre à jour ou ajouter le paramètre de catégorie
+            urlParams.set('category', this.value);
+            
+            // Supprimer la page courante pour éviter la pagination incorrecte
+            urlParams.delete('page');
+            
+            // Construire la nouvelle URL
+            const newUrl = window.location.pathname + '?' + urlParams.toString();
+            
+            // Rediriger vers la nouvelle URL
+            window.location.href = newUrl;
+        });
+
+        typeProprieteFilter.addEventListener('change', function() {
+            // Récupérer les paramètres existants de l'URL
+            const urlParams = new URLSearchParams(window.location.search);
+            
+            // Mettre à jour ou ajouter le paramètre de type de propriété
+            urlParams.set('type_propriete', this.value);
+            
+            // Supprimer la page courante pour éviter la pagination incorrecte
+            urlParams.delete('page');
+            
+            // Construire la nouvelle URL
+            const newUrl = window.location.pathname + '?' + urlParams.toString();
+            
+            // Rediriger vers la nouvelle URL
+            window.location.href = newUrl;
+        });
+    });
+</script>
 {% endblock %}

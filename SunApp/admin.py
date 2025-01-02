@@ -3,6 +3,7 @@ from .models import CustomUser
 from .models import Product
 from .models import Facture
 from .models import Notification
+from .models import RealEstateProperty
 
 
 # Register your models here.
@@ -15,3 +16,5 @@ admin.site.register(Product)
 admin.site.register(Facture)
 
 admin.site.register(Notification)
+
+admin.site.register(RealEstateProperty)

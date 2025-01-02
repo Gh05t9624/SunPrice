@@ -39,6 +39,7 @@ urlpatterns = [
     # ========== Les Formulaires ================
     path('product', views.create_product, name='product'),
     path('facture', views.facture, name='facture'),
+    path('immo', views.create_immo, name='immo'),
     
     # ========== Details ================
     path('product/<int:product_id>/', views.product_detail, name='product_detail'),
@@ -46,6 +47,7 @@ urlpatterns = [
     path('toggle_follow/<int:user_id>', views.toggle_follow, name='toggle_follow'),
     path('followed-users/', views.followed_users, name='followed_users'),
     path('facture_detail/<int:id>/', views.facture_detail, name='facture_detail'),
+    path('real_estate_detail/<int:real_estate_id>/', views.real_estate_detail, name='real_estate_detail'),
     
     path('api/', include(router.urls)),
     path('api-auth/', include('rest_framework.urls')),

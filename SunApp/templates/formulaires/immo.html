@@ -1,0 +1,362 @@
+{% extends 'formulaires/layouts/base.html' %}
+{% load static %}
+
+{% block base %}
+<style>
+    .inputs {
+        display: flex;
+        align-items: center;
+        margin-bottom: 5px;
+    }
+
+    .inputs i {
+        margin-right: 10px;
+        min-width: 20px;
+    }
+
+    .inputs .field {
+        flex: 1;
+    }
+
+    .image-preview {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+    .image-preview img {
+        max-width: 100px;
+        max-height: 100px;
+        object-fit: cover;
+        border-radius: 5px;
+    }
+</style>
+
+<div class="container">
+    <div class="bg" 
+    style="background: url('{% static 'assets/default/image1.jpeg' %}') no-repeat center; background-size: cover;
+            z-index: -1; content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        left: 0;
+        top: 0; background-size: cover;
+        filter: blur(30px);
+        z-index: -1;"></div>
+
+    <div class="contact-box">
+        <div class="left">
+            <img src="{% static 'assets/default/image1.jpeg' %}">
+            <div class="text-content">
+                <h3><span>Sun</span>Price</h3>
+                <p>Publiez votre bien immobilier facilement !</p>
+            </div>
+        </div>
+        <form method="POST" action="{% url 'immo' %}" enctype="multipart/form-data" class="right">
+            {% csrf_token %}
+            <h2>Poster un Bien Immobilier</h2>
+            
+            {% if form.errors %}
+                <div class="alert alert-danger">
+                    {% for field_name, errors in form.errors.items %}
+                        {% for error in errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    {% endfor %}
+                    
+                    {% if form.non_field_errors %}
+                        {% for error in form.non_field_errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            {% endif %}
+
+            <div class="inputs">
+                <i class="fa fa-list-alt"></i>
+                <select name="type_propriete" autocomplete="off" id="id_type_propriete" class="field" required>
+                    <option value="">Type de propriété</option>
+                    <option value="appartement">Appartement</option>
+                    <option value="maison">Maison</option>
+                    <option value="terrain">Terrain</option>
+                    <option value="bureau">Bureau</option>
+                    <option value="entrepot">Entrepôt</option>
+                </select>
+            </div>
+
+            <div class="inputs">
+                <i class="fa fa-exchange"></i>
+                <select name="type_transaction" autocomplete="off" id="id_type_transaction" class="field" required>
+                    <option value="">Type de transaction</option>
+                    <option value="location">Location</option>
+                    <option value="vente">Vente</option>
+                    <option value="location-vente">Location-Vente</option>
+                </select>
+            </div>
+
+            <div class="inputs">
+                <i class="fa fa-edit"></i>
+                <input type="text" name="titre" autocomplete="off" required id="id_titre" class="field" placeholder="Titre du bien">
+            </div>
+
+            <div class="inputs" id="prix-container">
+                <i class="fa fa-money"></i>
+                <input type="number" name="prix" autocomplete="off" required id="id_prix" class="field" placeholder="Prix" min="0" step="0.01">
+                <span id="prix-label">FCFA / mois</span>
+            </div>
+
+            <div class="inputs">
+                <i class="fa fa-area-chart"></i>
+                <input type="number" name="superficie" autocomplete="off" id="id_superficie" class="field" placeholder="Superficie (m²)" min="0" step="0.01">
+            </div>
+
+            <div class="inputs">
+                <i class="fa fa-file-image-o"></i>
+                <input type="file" name="images" id="id_images" class="field" accept="image/*" multiple>
+            </div>
+
+            <div class="image-preview" id="image-preview"></div>
+
+            <div class="inputs">
+                <i class="fa fa-paragraph"></i>
+                <textarea name="description" id="id_description" class="field" placeholder="Description du bien" rows="4" required></textarea>
+            </div>
+
+            <div class="inputs">
+                <i class="fa fa-map-marker"></i>
+                <input type="text" name="adresse" autocomplete="off" required id="id_adresse" class="field" placeholder="Adresse complète">
+            </div>
+
+            <div class="inputs">
+                <i class="fa fa-map-marker"></i>
+                <input type="text" name="ville" autocomplete="off" required id="id_ville" class="field" placeholder="Ville">
+            </div>
+
+            <div class="inputs">
+                <i class="fa fa-map-pin"></i>
+                <input type="text" name="quartier" autocomplete="off" required id="id_quartier" class="field" placeholder="Quartier">
+            </div>
+
+            <div id="appartement-fields" style="display: none;">
+                <div class="inputs">
+                    <i class="fa fa-building"></i>
+                    <input type="number" name="etage" id="id_etage" class="field" placeholder="Numéro de l'étage" data-required>
+                </div>
+                <div class="inputs">
+                    <i class="fa fa-home"></i>
+                    <input type="number" name="nombre_chambres" id="id_nombre_chambres" class="field" placeholder="Nombre de pièces" data-required>
+                </div>
+            </div>
+
+            <div id="maison-fields" style="display: none;">
+                <div class="inputs">
+                    <i class="fa fa-area-chart"></i>
+                    <input type="number" name="superficie_terrain" id="id_superficie_terrain" class="field" placeholder="Superficie du terrain (m²)" data-required step="0.01">
+                </div>
+                <div class="inputs">
+                    <i class="fa fa-building"></i>
+                    <input type="number" name="nombre_etages" id="id_nombre_etages" class="field" placeholder="Nombre d'étages" data-required>
+                </div>
+            </div>
+
+            <div id="terrain-fields" style="display: none;">
+                <div class="inputs">
+                    <i class="fa fa-check-square"></i>
+                    <select name="constructible" id="id_constructible" class="field" data-required>
+                        <option value="">Le terrain est-il constructible ?</option>
+                        <option value="True">Oui</option>
+                        <option value="False">Non</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="local-commercial-fields" style="display: none;">
+                <div class="inputs">
+                    <i class="fa fa-area-chart"></i>
+                    <input type="number" name="superficie_local" id="id_superficie_local" class="field" placeholder="Superficie du local (m²)" data-required step="0.01">
+                </div>
+                <div class="inputs">
+                    <i class="fa fa-briefcase"></i>
+                    <input type="text" name="type_activite" id="id_type_activite" class="field" placeholder="Type d'activité" data-required>
+                </div>
+            </div>
+
+            <button type="submit" class="btn">Publier le Bien Immobilier</button>
+
+            <!-- <div class="options">
+                <p>Besoin d'aide ? <a href="#">Contactez-nous</a></p>
+            </div> -->
+        </form>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form');
+    const typeProprietSelect = document.getElementById('id_type_propriete');
+    const submitButton = document.querySelector('button[type="submit"]');
+
+    // Gestion des champs conditionnels
+    function toggleConditionalFields() {
+        const selectedType = typeProprietSelect.value;
+        
+        // Masquer tous les champs spécifiques
+        ['appartement', 'maison', 'terrain', 'local-commercial'].forEach(type => {
+            const fields = document.getElementById(`${type}-fields`);
+            if (fields) fields.style.display = 'none';
+        });
+
+        // Afficher les champs spécifiques au type sélectionné
+        const specificFields = document.getElementById(`${selectedType.replace('_', '-')}-fields`);
+        if (specificFields) specificFields.style.display = 'block';
+
+        // Mise à jour dynamique de l'étiquette de prix
+        const prixLabel = document.getElementById('prix-label');
+        prixLabel.textContent = selectedType === 'location' ? 'FCFA / mois' : 'FCFA';
+    }
+
+    // Validation du formulaire
+    function validateForm(event) {
+        let isValid = true;
+        const selectedType = typeProprietSelect.value;
+
+        // Réinitialiser les styles d'erreur
+        form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+
+        // Validation des champs généraux
+        const generalRequiredFields = [
+            'titre', 'prix', 'description', 'adresse', 'ville', 'quartier', 'type_transaction'
+        ];
+
+        generalRequiredFields.forEach(fieldName => {
+            const field = document.getElementById(`id_${fieldName}`);
+            if (!field.value || field.value.trim() === '') {
+                field.classList.add('is-invalid');
+                isValid = false;
+            }
+        });
+
+        // Validation de la superficie
+        const superficie = document.getElementById('id_superficie');
+        if (!superficie.value || parseFloat(superficie.value) <= 0) {
+            superficie.classList.add('is-invalid');
+            isValid = false;
+        }
+
+        // Validation spécifique par type de propriété
+        switch(selectedType) {
+            case 'appartement':
+                const etage = document.getElementById('id_etage');
+                const nombreChambres = document.getElementById('id_nombre_chambres');
+                
+                if (!etage.value || parseInt(etage.value) < 0) {
+                    etage.classList.add('is-invalid');
+                    isValid = false;
+                }
+                
+                if (!nombreChambres.value || parseInt(nombreChambres.value) <= 0) {
+                    nombreChambres.classList.add('is-invalid');
+                    isValid = false;
+                }
+                break;
+            
+            case 'maison':
+                const superficieTerrain = document.getElementById('id_superficie_terrain');
+                const nombreEtages = document.getElementById('id_nombre_etages');
+                
+                if (!superficieTerrain.value || parseFloat(superficieTerrain.value) <= 0) {
+                    superficieTerrain.classList.add('is-invalid');
+                    isValid = false;
+                }
+                
+                if (!nombreEtages.value || parseInt(nombreEtages.value) <= 0) {
+                    nombreEtages.classList.add('is-invalid');
+                    isValid = false;
+                }
+                break;
+            
+            case 'terrain':
+                const constructible = document.getElementById('id_constructible');
+                
+                if (constructible.value === '') {
+                    constructible.classList.add('is-invalid');
+                    isValid = false;
+                }
+                break;
+            
+            case 'local_commercial':
+                const superficieLocal = document.getElementById('id_superficie_local');
+                const typeActivite = document.getElementById('id_type_activite');
+                
+                if (!superficieLocal.value || parseFloat(superficieLocal.value) <= 0) {
+                    superficieLocal.classList.add('is-invalid');
+                    isValid = false;
+                }
+                
+                if (!typeActivite.value) {
+                    typeActivite.classList.add('is-invalid');
+                    isValid = false;
+                }
+                break;
+        }
+
+        if (!isValid) {
+            event.preventDefault();
+            alert('Veuillez remplir correctement tous les champs requis.');
+            return false;
+        }
+
+        return true;
+    }
+
+    // Événements
+    typeProprietSelect.addEventListener('change', toggleConditionalFields);
+    form.addEventListener('submit', validateForm);
+
+    // Style pour les champs invalides
+    const style = document.createElement('style');
+    style.textContent = `
+        .is-invalid {
+            border: 2px solid red !important;
+        }
+    `;
+    document.head.appendChild(style);
+
+    // Initialisation
+    toggleConditionalFields();
+});
+
+// Prévisualisation des images
+document.getElementById('id_images').addEventListener('change', function(event) {
+    const preview = document.getElementById('image-preview');
+    preview.innerHTML = ''; // Clear previous previews
+    
+    for (let file of event.target.files) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            preview.appendChild(img);
+        }
+        
+        reader.readAsDataURL(file);
+    }
+});
+</script>
+
+{% endblock %}
+
+{% block scripts %}
+<style>
+.error {
+    border: 2px solid red !important;
+}
+.error-message {
+    color: red;
+    font-size: 0.8em;
+    margin-left: 30px;
+}
+</style>
+{% endblock %}

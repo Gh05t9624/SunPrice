@@ -82,8 +82,12 @@
                         </div>
                     </div>
                     <div class="sidebar-content">
-                        {% if request.user.rôle != 'acheteur' %}
+                        {% if request.user.rôle != 'acheteur' and request.user.rôle != 'imobilier' %}
                             <a href="product" class="sidebar-link">Poster un produit</a>
+                        {% endif %}
+
+                        {% if request.user.rôle == 'imobilier' %}
+                            <a href="immo" class="sidebar-link">Poster un produit immobilier</a>
                         {% endif %}
 
                         {% if request.user.rôle == 'acheteur' %}
@@ -199,6 +203,9 @@
     {% include 'footer/footer.html' %}
 
     <script src="{% static 'assets/ressources/scripts/SunPrice.js' %}"></script>
+
+    {% block scripts %}
+    {% endblock %}
 
 </body>
 </html>

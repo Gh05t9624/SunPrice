@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ product.title }} - Détails</title>
+    <title>{{ property.titre }} - Détails</title>
     
     <!-- Styles -->
     <link rel="stylesheet" href="{% static 'assets/ressources/styles/SunPrice.css' %}">
@@ -105,23 +105,23 @@
             <!-- Image Gallery Section -->
             <div class="product-image-gallery">
                 <div class="product-carousel">
-                    {% if product_images %}
-                        <img src="{{ product_images.0.image.url }}" alt="{{ product.title }}" class="carousel-image" id="main-carousel-image" style="width: 100%; max-height: 500px; object-fit: cover;">
+                    {% if property_images %}
+                        <img src="{{ property_images.0.image.url }}" alt="{{ property.titre }}" class="carousel-image" id="main-carousel-image" style="width: 100%; max-height: 500px; object-fit: cover;">
                         
                         <div class="carousel-controls">
                             <button class="carousel-control prev" onclick="changeImage(-1)">❮</button>
                             <button class="carousel-control next" onclick="changeImage(1)">❯</button>
                         </div>
                     {% else %}
-                        <img src="{% static 'assets/default/placeholder.jpg' %}" alt="{{ product.title }}" class="carousel-image" style="width: 100%; max-height: 500px; object-fit: cover;">
+                        <img src="{% static 'assets/default/placeholder.jpg' %}" alt="{{ property.titre }}" class="carousel-image" style="width: 100%; max-height: 500px; object-fit: cover;">
                     {% endif %}
                 </div>
 
                 <div class="image-thumbnails">
-                    {% for image in product_images %}
+                    {% for image in property_images %}
                         <img 
                             src="{{ image.image.url }}" 
-                            alt="{{ product.title }} - Image {{ forloop.counter }}"
+                            alt="{{ property.titre }} - Image {{ forloop.counter }}"
                             class="thumbnail {% if forloop.first %}active{% endif %}"
                             onclick="setMainImage(this)"
                         >
@@ -129,50 +129,42 @@
                 </div>
             </div>
 
-            <!-- Product Info Section -->
+            <!-- Property Info Section -->
             <div class="product-info-section">
-                <span class="vendor-badge vendor-badge-supermarket">{{ product.category }}</span>
-                <h1 class="product-title">{{ product.title }}</h1>
-                <div class="product-price">{{ product.prix }} FCFA</div>
+                <span class="vendor-badge vendor-badge-supermarket">{{ property.type_propriete }}</span>
+                <h1 class="product-title">{{ property.titre }}</h1>
+                <div class="product-price">{{ property.prix }} FCFA</div>
                 <p class="product-description">
-                    {{ product.contenu_post|safe }}
+                    {{ property.description|safe }}
                 </p>
                 
                 <div class="product-actions">
-                    <form method="POST" action="{% url 'product_detail' product_id=product.id %}">
-                        {% csrf_token %}
-                        <div class="quantity-selector">
-                            <a class="quantity-btn minus">-</a>
-                            <input type="number" value="1" min="1" class="quantity-input" id="quantity" name="quantity">
-                            <a class="quantity-btn plus">+</a>
-                        </div>
                         <button class="add-to-cart-btn" type="submit">
-                            Ajouter au facture
+                            Contacter le vendeur
                         </button>
-                    </form>
                 </div>
-                <em class="gold">Mis en vente depuis le {{ product.date_creation_post|date:"d F Y à H:i" }}</em>
+                <em class="gold">Mis en vente depuis le {{ property.date_creation|date:"d F Y à H:i" }}</em>
             </div>
         </div>
 
-        <!-- Similar Products Section -->
-        {% if similar_products %}
+        <!-- Similar Properties Section -->
+        {% if similar_properties %}
             <section class="similar-products-section">
-                <h2 class="section-title">Produits similaires</h2>
+                <h2 class="section-title">Biens similaires</h2>
                 <div class="similar-products">
-                    {% for similar_product in similar_products %}
+                    {% for similar_property in similar_properties %}
                         <div class="similar-product-card">
-                            {% with first_image=similar_product.get_first_image %}
+                            {% with first_image=similar_property.get_first_image %}
                                 {% if first_image %}
-                                    <img src="{{ first_image.url }}" alt="{{ similar_product.title }}" class="similar-product-image">
+                                    <img src="{{ first_image.url }}" alt="{{ similar_property.titre }}" class="similar-product-image">
                                 {% else %}
-                                    <img src="{% static 'assets/default/placeholder.jpg' %}" alt="{{ similar_product.title }}" class="similar-product-image">
+                                    <img src="{% static 'assets/default/placeholder.jpg' %}" alt="{{ similar_property.titre }}" class="similar-product-image">
                                 {% endif %}
                             {% endwith %}
                             <div class="similar-product-info">
-                                <h3>{{ similar_product.title }}</h3>
-                                <p>{{ similar_product.prix }} FCFA</p>
-                                <a href="{% url 'product_detail' product_id=similar_product.id %}" class="btn btn-primary">Voir le produit</a>
+                                <h3>{{ similar_property.titre }}</h3>
+                                <p>{{ similar_property.prix }} FCFA</p>
+                                <a href="{% url 'real_estate_detail' real_estate_id=similar_property.id %}" class="btn btn-primary">Voir le bien</a>
                             </div>
                         </div>
                     {% endfor %}
@@ -186,7 +178,7 @@
     <script>
         let currentImageIndex = 0;
         const images = [
-            {% for image in product_images %}
+            {% for image in property_images %}
                 "{{ image.image.url }}",
             {% endfor %}
         ];

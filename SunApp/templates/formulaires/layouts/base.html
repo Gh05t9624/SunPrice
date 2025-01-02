@@ -3,31 +3,31 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    
     <link type="images/jpg" rel="icon" href="{% static 'assets/logo/galsen.jpg' %}">
-
-    <title> GALSEN </title>
 
     <!-- Box Icone -->
     <link rel="stylesheet" href="{% static 'assets/icones/font-awesome/css/font-awesome.css' %}">
     <link rel="stylesheet" href="{% static 'assets/icones/font-awesome/css/font-awesome.min.css' %}">
 
     <!-- Style -->
-    <link rel="stylesheet" href="{% static 'assets/formulaires/styles/create.css' %}">
     <link rel="stylesheet" href="{% static 'assets/formulaires/styles/form.css' %}">
 
+    <title> SunPrice </title>
 </head>
 <body>
+    
 
-    {% block Base %}
+    {% block base %}
 
     {% endblock %}
 
-    <script src="{% static 'assets/formulaires/scripts/create.js' %}"></script>
-    <script src="{% static 'assets/ressources/scripts/Retour.js' %}"></script>
-    <!-- <script src="{% static 'assets/algos/scripts/secrete.js' %}"></script> -->
     <script src="{% static 'assets/formulaires/scripts/edit.js' %}"></script>
+    <script src="{% static 'assets/formulaires/scripts/views.js' %}"></script>
+    <!-- <script src="{% static 'assets/algos/scripts/secrete.js' %}"></script> -->
+    <script src="{% static 'assets/ressources/scripts/Retour.js' %}"></script>
+
+
 </body>
 </html>

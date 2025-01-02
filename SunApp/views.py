@@ -3,14 +3,14 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
-from .forms import CustomUserCreationForm
+from .forms import CustomUserCreationForm, RealEstatePropertyForm
 from django.core.exceptions import ValidationError
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django_filters import rest_framework as filters
+from django.db.models import Q, Avg, Min, Max
 
-from .models import CustomUser, Notification, Product, Facture, Follow
-from django.db.models import Q
+from .models import CustomUser, Notification, Product, Facture, Follow, ProductImage, RealEstateProperty
 import unicodedata
 from .ai_services.recommendation import ProductRecommender
 from .ai_services.smart_search import SmartSearch
@@ -120,61 +120,64 @@ def log_out(request):
 
 ''' =========== User Pages ========= '''
 def home(request):
-    query = request.GET.get('poste', '')
-    category = request.GET.get('category', '')
-    min_price = request.GET.get('min_price')
-    max_price = request.GET.get('max_price')
-    
-    logging.debug(f"Recherche reçue pour: {query}")
-    
-    products = Product.objects.all()
+    # Récupérer les filtres de la requête
+    category_filter = request.GET.get('category', '')
+    type_propriete_filter = request.GET.get('type_propriete', '')
+    search_query = request.GET.get('search', '')
 
-    if query:
-        smart_search = SmartSearch()
-        products = smart_search.search(query)
-        logging.debug(f"Nombre de produits trouvés: {products.count()}")
-        if not products.exists():
-            messages.warning(request, "Aucun produit trouvé pour votre recherche.")
-    
-    # Appliquer les filtres
-    product_filter = ProductFilter(request.GET, queryset=products)
-    products = product_filter.qs
-    
-    # Diviser les produits en moins chers et plus chers
-    if products.exists():
-        sorted_products = products.order_by('prix')
-        mid_index = len(sorted_products) // 2
-        cheaper_products = sorted_products[:mid_index]
-        expensive_products = sorted_products[mid_index:]
-        logging.debug(f"Cheaper Products Count: {len(cheaper_products)}")
-        logging.debug(f"Expensive Products Count: {len(expensive_products)}")
-    else:
-        cheaper_products = []
-        expensive_products = []
-        logging.debug("Aucun produit trouvé après filtrage.")
-    
-    if request.user.is_authenticated:
-        recommender = ProductRecommender()
-        recommended_products = recommender.get_product_recommendations(request.user)
-    else:
-        recommended_products = []
-    
-    price_analyzer = PriceAnalyzer()
-    price_analysis = price_analyzer.analyze_price_trends()
-    
+    # Requête de base pour les produits
+    products_query = Product.objects.all()
+    real_estate_query = RealEstateProperty.objects.all()
+
+    # Filtrer par catégorie si spécifié
+    if category_filter:
+        # Filtrer uniquement les produits standards
+        products_query = products_query.filter(category=category_filter)
+        # Vider les biens immobiliers si un filtre de catégorie produit est actif
+        real_estate_query = RealEstateProperty.objects.none()
+
+    # Filtrer par type de propriété si spécifié
+    if type_propriete_filter:
+        # Filtrer uniquement les biens immobiliers
+        real_estate_query = real_estate_query.filter(type_propriete=type_propriete_filter)
+        # Vider les produits si un filtre de type de propriété est actif
+        products_query = Product.objects.none()
+
+    # Filtrer par recherche si spécifié
+    if search_query:
+        products_query = products_query.filter(
+            Q(title__icontains=search_query) | 
+            Q(contenu_post__icontains=search_query)
+        )
+        real_estate_query = real_estate_query.filter(
+            Q(titre__icontains=search_query) | 
+            Q(description__icontains=search_query)
+        )
+
+    # Combiner les résultats
+    combined_results = list(products_query) + list(real_estate_query)
+
+    # Trier par date de création (du plus récent au plus ancien)
+    combined_results.sort(
+        key=lambda x: x.date_creation_post if hasattr(x, 'date_creation_post') else x.date_creation, 
+        reverse=True
+    )
+
+    # Pagination
+    paginator = Paginator(combined_results, 10)  # 10 éléments par page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    # Ajouter un attribut pour identifier le type
+    for item in page_obj:
+        item.item_type = 'Product' if isinstance(item, Product) else 'RealEstateProperty'
+
     context = {
-        'products': products,
-        'cheaper_products': cheaper_products,
-        'expensive_products': expensive_products,
-        'recommended_products': recommended_products,
-        'price_analysis': price_analysis,
-        'query': query,
-        'selected_category': category,
-        'min_price': min_price,
-        'max_price': max_price,
-        'filter': product_filter,
+        'page_obj': page_obj,
+        'is_paginated': page_obj.has_other_pages(),
+        'Product': Product,
     }
-    
+
     return render(request, 'users/pages/home.html', context)
 
 @login_required
@@ -473,16 +476,28 @@ def SuperAdmin(request):
 ''' ========== Les Formulaires ================= '''
 @login_required
 def create_product(request):
+    # Définition des catégories de produits
+    PRODUCT_CATEGORIES = [
+        ('electronics', 'Électronique'),
+        ('fashion', 'Mode et Vêtements'),
+        ('beauty_health', 'Beauté et Santé'),
+        ('food_drink', 'Alimentation et Boissons'),
+        ('sports_leisure', 'Sport et Loisirs'),
+        ('books_media', 'Livres et Médias'),
+        ('toys_kids', 'Jouets et Enfants'),
+        ('automotive_tools', 'Automobile et Outils'),
+        ('pets', 'Animaux'),
+        ('services', 'Services et Abonnements'),
+        ('special_offers', 'Offres spéciales / Promotions'),
+    ]
+
     if request.method == 'POST':
         # Récupérer les données du formulaire
         title = request.POST.get('nom_produit')
         prix = request.POST.get('prix')
         description = request.POST.get('description')
         category = request.POST.get('category')
-        pays = request.POST.get('pays')
-        ville = request.POST.get('ville')
-        quartier = request.POST.get('quartier')
-        image = request.FILES.get('image')
+        images = request.FILES.getlist('images')  # Récupérer toutes les images
 
         # Créer un nouveau produit
         product = Product.objects.create(
@@ -490,18 +505,42 @@ def create_product(request):
             title=title,
             prix=prix,
             contenu_post=description,
-            image=image,
-            category=category,
-            pays=pays,
-            ville=ville,
-            quartier=quartier
+            category=category
         )
+        
+        # Enregistrer les images
+        for image in images:
+            ProductImage.objects.create(product=product, image=image)
         
         # Redirection vers la page d'accueil après succès
         return redirect('home')
 
     # Si la méthode est GET, afficher le formulaire
-    return render(request, 'formulaires/product.html')
+    return render(request, 'formulaires/product.html', {
+        'product_categories': PRODUCT_CATEGORIES
+    })
+
+def create_immo(request):
+    # Vérifier que seuls les utilisateurs avec le rôle immobilier peuvent poster
+    if request.user.rôle not in ['immobilier', 'imobilier']:
+        messages.error(request, "Vous n'avez pas les permissions nécessaires.")
+        return redirect('home')
+
+    if request.method == 'POST':
+        form = RealEstatePropertyForm(request.POST, request.FILES)
+        if form.is_valid():
+            real_estate_property = form.save(user=request.user)
+            messages.success(request, "Votre bien immobilier a été posté avec succès.")
+            return redirect('home')
+        else:
+            messages.error(request, "Il y a des erreurs dans le formulaire.")
+    else:
+        form = RealEstatePropertyForm()
+
+    return render(request, 'formulaires/immo.html', {
+        'form': form,
+        'title': 'Poster un bien immobilier'
+    })
 
 def facture(request):
     factures = Facture.objects.filter(user=request.user)
@@ -537,37 +576,24 @@ def public_factures(request):
     factures = Facture.objects.filter(is_public=True)
     return render(request, 'formulaires/public_facture.html', {'factures': factures})
 
-
-''' ========== Les Details ================= '''
+@login_required
 def product_detail(request, product_id):
-    product = get_object_or_404(Product, pk=product_id)
-
-    if request.method == "POST":
-        quantity = int(request.POST.get("quantity", 1))
-        if quantity > 0:
-            # Vérifier si le produit est déjà dans la facture
-            existing_facture = Facture.objects.filter(user=request.user, product=product).first()
-            if existing_facture:
-                if 'remove' in request.POST:
-                    # Supprimer le produit de la facture
-                    existing_facture.delete()
-                else:
-                    # Mettre à jour la quantité si le produit est déjà dans la facture
-                    existing_facture.quantity = quantity
-                    existing_facture.save()
-            else:
-                # Ajouter le produit à la facture s'il n'est pas encore présent
-                facture = Facture(user=request.user, product=product, quantity=quantity)
-                facture.save()
-        return redirect('home')
-
-    # Vérifier si le produit est déjà dans la facture pour afficher le bon bouton
-    is_in_facture = Facture.objects.filter(user=request.user, product=product).exists()
-
-    return render(request, 'Details/details_product.html', {
+    # Récupérer le produit avec toutes ses images
+    product = get_object_or_404(Product, id=product_id)
+    product_images = product.images.all()
+    
+    # Récupérer des produits similaires dans la même catégorie
+    similar_products = Product.objects.filter(
+        category=product.category
+    ).exclude(id=product.id)[:6]  # 6 produits similaires max
+    
+    context = {
         'product': product,
-        'is_in_facture': is_in_facture
-    })
+        'product_images': product_images,
+        'similar_products': similar_products
+    }
+    
+    return render(request, 'Details/details_product.html', context)
 
 def user_detail(request, user_id):
     user = get_object_or_404(CustomUser, pk=user_id)
@@ -635,3 +661,23 @@ def facture_detail(request, id):
     factures = Facture.objects.filter(user=user, is_public=True)  # Optionnel: filtre pour les factures publiques
     
     return render(request, 'Details/public_facture.html', {'factures': factures, 'user': user})
+
+@login_required
+def real_estate_detail(request, real_estate_id):
+    # Récupérer le bien immobilier avec toutes ses images
+    real_estate_property = get_object_or_404(RealEstateProperty, id=real_estate_id)
+    property_images = real_estate_property.property_images.all()
+    
+    # Récupérer des biens immobiliers similaires
+    similar_properties = RealEstateProperty.objects.filter(
+        type_propriete=real_estate_property.type_propriete,
+        ville=real_estate_property.ville
+    ).exclude(id=real_estate_property.id)[:6]  # 6 biens similaires max
+    
+    context = {
+        'property': real_estate_property,
+        'property_images': property_images,
+        'similar_properties': similar_properties
+    }
+    
+    return render(request, 'Details/details_real_estate.html', context)
