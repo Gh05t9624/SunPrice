@@ -1,0 +1,61 @@
+{% extends 'users/layouts/app.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container delete-product-container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h2>Confirmer la suppression</h2>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <p>Êtes-vous sûr de vouloir supprimer le produit "{{ product.title }}" ?</p>
+                        <p class="text-danger"><strong>Attention : Cette action est irréversible !</strong></p>
+                    </div>
+                    
+                    <div class="product-details">
+                        <h3>Détails du Produit</h3>
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <strong>Titre :</strong> {{ product.title }}
+                            </li>
+                            <li class="list-group-item">
+                                <strong>Prix :</strong> {{ product.prix }} FCFA
+                            </li>
+                            <li class="list-group-item">
+                                <strong>Catégorie :</strong> {{ product.category }}
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <form method="post" class="mt-3">
+                        {% csrf_token %}
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash"></i> Confirmer la suppression
+                            </button>
+                            <a href="{% url 'gestion_boutique' %}" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Annuler
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.delete-product-container {
+    margin-top: 50px;
+}
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+}
+</style>
+{% endblock %}

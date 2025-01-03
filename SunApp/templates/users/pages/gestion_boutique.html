@@ -1,0 +1,245 @@
+{% load static %}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de Bord Vendeur</title>
+    <link rel="stylesheet" href="{% static 'assets/ressources/styles/gestion.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="youtube-studio-dashboard">
+
+        <div class="mobile-nav">
+            <div class="mobile-menu">
+                <div class="sidebar-menu-item active" data-section="dashboard">
+                    <i class="fas fa-home"></i>
+                    <span>Tableau de Bord</span>
+                </div>
+                <div class="sidebar-menu-item" data-section="products">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Produits</span>
+                </div>
+                <div class="sidebar-menu-item" data-section="statistics">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Statistiques</span>
+                </div>
+                <div class="sidebar-menu-item" data-section="settings">
+                    <i class="fas fa-cog"></i>
+                    <span>Paramètres</span>
+                </div>
+            </div>
+        </div>
+
+        <aside class="sidebar">
+            <nav class="sidebar-menu">
+                <div class="sidebar-menu-item active" data-section="dashboard">
+                    <i class="fas fa-home"></i>
+                    <span>Tableau de Bord</span>
+                </div>
+                <div class="sidebar-menu-item" data-section="products">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Produits</span>
+                </div>
+                <div class="sidebar-menu-item" data-section="statistics">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Statistiques</span>
+                </div>
+                <div class="sidebar-menu-item" data-section="settings">
+                    <i class="fas fa-cog"></i>
+                    <span>Paramètres</span>
+                </div>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <div id="dashboard-section" class="dashboard-section active">
+                <div class="dashboard-header animate-on-load">
+                    <h1>
+                        <i class="fas fa-chart-line"></i> 
+                        Tableau de Bord Vendeur
+                    </h1>
+                    <p>Bienvenue, {{ user.username }} ! Voici un aperçu de vos performances.</p>
+                </div>
+
+                <div class="dashboard-summary">
+                    <div class="summary-card animate-on-load">
+                        <h3>
+                            <i class="fas fa-shopping-cart"></i> 
+                            Produits
+                        </h3>
+                        <div class="summary-value">{{ total_products }}</div>
+                        <p>Total des produits en vente</p>
+                    </div>
+                    {% if show_real_estate %}
+                    <div class="summary-card animate-on-load">
+                        <h3>
+                            <i class="fas fa-home"></i> 
+                            Biens Immobiliers
+                        </h3>
+                        <div class="summary-value">{{ total_real_estate }}</div>
+                        <p>Total des biens immobiliers</p>
+                    </div>
+                    {% endif %}
+                    <div class="summary-card animate-on-load">
+                        <h3>
+                            <i class="fas fa-coins"></i> 
+                            Chiffre d'Affaires
+                        </h3>
+                        <div class="summary-value">{{ total_sales|floatformat:0|intcomma }} FCFA</div>
+                        <p>Revenus totaux</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="products-section" class="dashboard-section">
+                <div class="dashboard-header">
+                    <h1>
+                        <i class="fas fa-shopping-cart"></i> 
+                        Mes Produits
+                    </h1>
+                </div>
+
+                {% if products %}
+                <div class="table-responsive">
+                    <table class="products-table">
+                        <thead>
+                            <tr>
+                                <th class="product-image-cell">Image</th>
+                                <th class="none">Titre</th>
+                                <th class="none">Catégorie</th>
+                                <th>Prix</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for product in products %}
+                                <tr>
+                                    <td class="product-image-cell">
+                                        {% with first_image=product.product_images.first %}
+                                            {% if first_image and first_image.image %}
+                                                <img src="{{ first_image.image.url }}" alt="{{ product.title }}" onerror="this.src='/static/assets/img/placeholder-product.png'">
+                                            {% else %}
+                                                <img src="/static/assets/img/placeholder-product.png" alt="{{ product.title }}">
+                                            {% endif %}
+                                        {% endwith %}
+                                    </td>
+                                    <td class="product-title none">{{ product.title }}</td>
+                                    <td class="product-category none">{{ product.get_category_display }}</td>
+                                    <td class="product-price">{{ product.prix|floatformat:0|intcomma }} FCFA</td>
+                                    <td class="product-actions">
+                                        <a href="{% url 'edit_product' product.id %}" class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-edit"></i> Éditer
+                                        </a>
+                                        <a href="{% url 'delete_product' product.id %}" class="btn btn-sm btn-outline-danger">
+                                            <i class="fas fa-trash"></i> Supprimer
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-box-open"></i>
+                    <p>Aucun produit en vente pour le moment</p>
+                </div>
+                {% endif %}
+            </div>
+
+            <div id="statistics-section" class="dashboard-section">
+                <div class="dashboard-header">
+                    <h1>
+                        <i class="fas fa-chart-line"></i> 
+                        Statistiques Détaillées
+                    </h1>
+                </div>
+
+                <div class="dashboard-section animate-on-load">
+                    <h2>
+                        <i class="fas fa-tags"></i> 
+                        Statistiques des Catégories de Produits
+                    </h2>
+                    {% if product_category_stats %}
+                    <table class="stats-table">
+                        <thead>
+                            <tr>
+                                <th>Catégorie</th>
+                                <th>Nombre de Produits</th>
+                                <th>Ventes Totales</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for category, stats in product_category_stats.items %}
+                            <tr>
+                                <td>{{ category }}</td>
+                                <td>{{ stats.count }}</td>
+                                <td>{{ stats.total_sales|floatformat:0|intcomma }} FCFA</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <div class="empty-state">
+                        <i class="fas fa-box-open"></i>
+                        <p>Aucun produit en vente pour le moment</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div id="settings-section" class="dashboard-section">
+                <div class="dashboard-header">
+                    <h1>
+                        <i class="fas fa-cog"></i> 
+                        Paramètres du Compte
+                    </h1>
+                </div>
+                <!-- Contenu des paramètres à ajouter -->
+                <div class="settings-content">
+                    <p>Fonctionnalités de paramètres à venir...</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebarItems = document.querySelectorAll('.sidebar-menu-item');
+            const sections = document.querySelectorAll('.dashboard-section');
+            const sidebar = document.querySelector('.sidebar');
+            const closeSidebarBtn = document.querySelector('.close-sidebar-btn');
+
+            // Navigation entre sections
+            sidebarItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    // Désactiver tous les éléments de la sidebar
+                    sidebarItems.forEach(i => i.classList.remove('active'));
+                    
+                    // Activer l'élément cliqué
+                    this.classList.add('active');
+
+                    // Récupérer la section associée
+                    const sectionId = this.getAttribute('data-section');
+                    
+                    // Cacher toutes les sections
+                    sections.forEach(section => {
+                        section.classList.remove('active');
+                    });
+
+                    // Afficher la section correspondante
+                    const activeSection = document.getElementById(`${sectionId}-section`);
+                    if (activeSection) {
+                        activeSection.classList.add('active');
+                    }
+
+                });
+            });
+
+        });
+    </script>
+</body>
+</html>

@@ -97,6 +97,11 @@
                         {% if request.user.is_authenticated and request.user.rôle == 'acheteur' %}
                             <a href="{% url 'followed_users' %}" class="sidebar-link">Utilisateurs Suivis</a>
                         {% endif %}
+
+                        {% if request.user.rôle != 'acheteur' %}
+                            <a href="gestion_boutique" class="sidebar-link">Gestion de votre boutique</a>
+                        {% endif %}
+
                         <a href="{% url 'logout' %}" class="sidebar-link">Déconnexion</a>
                     </div>
                 </div>
@@ -180,15 +185,28 @@
             </div>
         </div>
         <div class="sidebar-content">
-            <a href="/" class="sidebar-link">Accueil</a>
-            <a href="/supermarches" class="sidebar-link">Supermarchés</a>
-            <a href="/boutiques" class="sidebar-link">Boutiques</a>
-            <a href="/particuliers" class="sidebar-link">Particuliers</a>
-            <a href="/superettes" class="sidebar-link">Superettes</a>
+            {% if request.user.rôle != 'acheteur' and request.user.rôle != 'imobilier' %}
+                <a href="product" class="sidebar-link">Poster un produit</a>
+            {% endif %}
+
+            {% if request.user.rôle == 'imobilier' %}
+                <a href="immo" class="sidebar-link">Poster un produit immobilier</a>
+            {% endif %}
+
+            {% if request.user.rôle == 'acheteur' %}
+                <a href="facture" class="sidebar-link">Votre facture</a>
+            {% endif %}
+            
+            {% if request.user.is_authenticated and request.user.rôle == 'acheteur' %}
+                <a href="{% url 'followed_users' %}" class="sidebar-link">Utilisateurs Suivis</a>
+            {% endif %}
+            {% if request.user.rôle != 'acheteur' %}
+                <a href="gestion_boutique" class="sidebar-link">Gestion de votre boutique</a>
+            {% endif %}
         </div>
 
         <div class="side-bottom">
-            <a href="#" class="sidebar-link"> <i class="fa fa-sign-out"></i> Déconnexion</a>
+            <a href="{% url 'logout' %}" class="sidebar-link"> <i class="fa fa-sign-out"></i> Déconnexion</a>
         </div>
     </div>
 

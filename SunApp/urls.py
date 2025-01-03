@@ -26,6 +26,7 @@ urlpatterns = [
     path('particulier', views.particulier, name='particulier'),
     path('imobilier', views.imobilier, name='imobilier'),
     path('facture_users', views.facture_users, name='facture_users'),
+    path('gestion_boutique', views.gestion_boutique, name='gestion_boutique'),
     
     # ========== Pages de Notifications ======================
     path('notifications', views.notifications, name='notifications'),
@@ -48,6 +49,8 @@ urlpatterns = [
     path('followed-users/', views.followed_users, name='followed_users'),
     path('facture_detail/<int:id>/', views.facture_detail, name='facture_detail'),
     path('real_estate_detail/<int:real_estate_id>/', views.real_estate_detail, name='real_estate_detail'),
+    path('produit/editer/<int:product_id>/', views.edit_product, name='edit_product'),
+    path('produit/supprimer/<int:product_id>/', views.delete_product, name='delete_product'),
     
     path('api/', include(router.urls)),
     path('api-auth/', include('rest_framework.urls')),

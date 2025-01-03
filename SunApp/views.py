@@ -8,9 +8,12 @@ from django.core.exceptions import ValidationError
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django_filters import rest_framework as filters
-from django.db.models import Q, Avg, Min, Max
+from django.db.models import Q, Avg, Min, Max, Sum, Count
+from django.db.models.functions import TruncMonth
+from django.utils import timezone
+from decimal import Decimal
 
-from .models import CustomUser, Notification, Product, Facture, Follow, ProductImage, RealEstateProperty
+from .models import CustomUser, Notification, Product, Facture, Follow, ProductImage, RealEstateProperty, SellerBadge
 import unicodedata
 from .ai_services.recommendation import ProductRecommender
 from .ai_services.smart_search import SmartSearch
@@ -431,7 +434,59 @@ def facture_users(request):
     ]
 
     return render(request, 'users/pages/facture.html', {'utilisateurs_publics': utilisateurs_publics})
+
+@login_required
+def gestion_boutique(request):
+    user = request.user
     
+    # Récupération des produits avec débogage
+    products = Product.objects.filter(user=user)
+    
+    # Ajout de print pour le débogage
+    print(f"Nombre de produits : {products.count()}")
+    print("Détails des produits :")
+    for product in products:
+        print(f"- {product.title} (ID: {product.id}, Prix: {product.prix}, Catégorie: {product.category})")
+    
+    # Vérification des données utilisateur
+    print(f"Utilisateur connecté : {user.username}")
+    print(f"Rôle de l'utilisateur : {user.rôle}")
+    
+    # Statistiques des catégories de produits
+    product_category_stats = {}
+    for product in products:
+        category = product.category
+        if category not in product_category_stats:
+            product_category_stats[category] = {
+                'count': 0,
+                'total_price': 0
+            }
+        product_category_stats[category]['count'] += 1
+        product_category_stats[category]['total_price'] += product.prix
+
+    # Conversion en liste pour le template
+    category_sales_pie = [
+        {
+            'category': category, 
+            'count': stats['count'], 
+            'total_price': stats['total_price']
+        } for category, stats in product_category_stats.items()
+    ]
+
+    # Préparation du contexte
+    context = {
+        'products': products,  # IMPORTANT : Ajout des produits au contexte
+        'category_sales_pie': category_sales_pie,
+        'total_products': products.count(),
+        'user_debug_info': {
+            'username': user.username,
+            'role': user.rôle,
+            'total_products': products.count()
+        }
+    }
+    
+    return render(request, 'users/pages/gestion_boutique.html', context)
+
 ''' ========== Pages Notifications ================= '''
 def notifications(request):
     user_notifications = Notification.objects.filter(user=request.user).order_by('-timestamp')  # Récupérer les notifications de l'utilisateur
@@ -660,7 +715,13 @@ def facture_detail(request, id):
     # Récupérer toutes les factures de cet utilisateur
     factures = Facture.objects.filter(user=user, is_public=True)  # Optionnel: filtre pour les factures publiques
     
-    return render(request, 'Details/public_facture.html', {'factures': factures, 'user': user})
+    # Modification de la requête pour limiter les ventes récentes
+    recent_sales = Facture.objects.filter(
+        user=user, 
+        status='Payé'
+    ).order_by('-date_creation')[:5]  # Limiter à 5 ventes récentes
+    
+    return render(request, 'Details/public_facture.html', {'factures': factures, 'user': user, 'recent_sales': recent_sales})
 
 @login_required
 def real_estate_detail(request, real_estate_id):
@@ -681,3 +742,54 @@ def real_estate_detail(request, real_estate_id):
     }
     
     return render(request, 'Details/details_real_estate.html', context)
+
+@login_required
+def edit_product(request, product_id):
+    """Vue pour éditer un produit"""
+    product = get_object_or_404(Product, id=product_id, user=request.user)
+    
+    if request.method == 'POST':
+        # Récupérer les données du formulaire
+        title = request.POST.get('title')
+        description = request.POST.get('description')
+        prix = request.POST.get('prix')
+        category = request.POST.get('category')
+        stock = request.POST.get('stock')
+        
+        # Validation basique
+        if title and prix and category:
+            try:
+                product.title = title
+                product.description = description
+                product.prix = float(prix)
+                product.category = category
+                product.stock = int(stock)
+                
+                # Gestion de l'image (optionnel)
+                if 'image' in request.FILES:
+                    product.image = request.FILES['image']
+                
+                product.save()
+                messages.success(request, 'Produit mis à jour avec succès !')
+                return redirect('gestion_boutique')
+            except ValueError:
+                messages.error(request, 'Veuillez entrer des valeurs valides.')
+        else:
+            messages.error(request, 'Tous les champs requis doivent être remplis.')
+    
+    return render(request, 'users/pages/edit_product.html', {'product': product})
+
+@login_required
+def delete_product(request, product_id):
+    """Vue pour supprimer un produit"""
+    product = get_object_or_404(Product, id=product_id, user=request.user)
+    
+    if request.method == 'POST':
+        try:
+            product.delete()
+            messages.success(request, 'Produit supprimé avec succès !')
+            return redirect('gestion_boutique')
+        except Exception as e:
+            messages.error(request, f'Erreur lors de la suppression : {str(e)}')
+    
+    return render(request, 'users/pages/confirm_delete_product.html', {'product': product})

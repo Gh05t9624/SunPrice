@@ -228,3 +228,42 @@ class RealEstateProperty(models.Model):
         verbose_name = "Bien Immobilier"
         verbose_name_plural = "Biens Immobiliers"
         ordering = ['-date_creation']
+
+class SellerBadge(models.Model):
+    """Modèle pour les badges des vendeurs"""
+    BADGE_TYPES = [
+        ('debutant', 'Débutant'),
+        ('prometteur', 'Prometteur'),
+        ('expert', 'Expert'),
+        ('maitre', 'Maître'),
+        ('legendaire', 'Légendaire')
+    ]
+
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='badges')
+    badge_type = models.CharField(max_length=20, choices=BADGE_TYPES)
+    date_earned = models.DateTimeField(auto_now_add=True)
+    description = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.get_badge_type_display()}"
+
+    @classmethod
+    def create_badge(cls, user, badge_type):
+        """Méthode de création de badge"""
+        return cls.objects.create(
+            user=user, 
+            badge_type=badge_type,
+            description=cls.get_badge_description(badge_type)
+        )
+
+    @staticmethod
+    def get_badge_description(badge_type):
+        """Descriptions des badges"""
+        descriptions = {
+            'debutant': "Votre premier pas dans le monde du commerce !",
+            'prometteur': "Vous montrez un potentiel remarquable !",
+            'expert': "Votre expertise commence à se confirmer.",
+            'maitre': "Vous êtes un professionnel accompli !",
+            'legendaire': "Vous êtes une légende du commerce !"
+        }
+        return descriptions.get(badge_type, "")

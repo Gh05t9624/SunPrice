@@ -1,0 +1,90 @@
+{% extends 'users/layouts/app.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container edit-product-container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Éditer le Produit</h2>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="form-group mb-3">
+                            <label for="title">Titre du Produit</label>
+                            <input type="text" class="form-control" id="title" name="title" 
+                                   value="{{ product.title }}" required>
+                        </div>
+                        
+                        <div class="form-group mb-3">
+                            <label for="description">Description</label>
+                            <textarea class="form-control" id="description" name="description" 
+                                      rows="3">{{ product.description }}</textarea>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 form-group mb-3">
+                                <label for="prix">Prix (FCFA)</label>
+                                <input type="number" class="form-control" id="prix" name="prix" 
+                                       value="{{ product.prix }}" required step="0.01">
+                            </div>
+                            
+                            <div class="col-md-6 form-group mb-3">
+                                <label for="stock">Stock</label>
+                                <input type="number" class="form-control" id="stock" name="stock" 
+                                       value="{{ product.stock }}" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group mb-3">
+                            <label for="category">Catégorie</label>
+                            <select class="form-control" id="category" name="category" required>
+                                <option value="">Sélectionnez une catégorie</option>
+                                <option value="Électronique" {% if product.category == 'Électronique' %}selected{% endif %}>Électronique</option>
+                                <option value="Mode" {% if product.category == 'Mode' %}selected{% endif %}>Mode</option>
+                                <option value="Santé/Beauté" {% if product.category == 'Santé/Beauté' %}selected{% endif %}>Santé/Beauté</option>
+                                <option value="Alimentation" {% if product.category == 'Alimentation' %}selected{% endif %}>Alimentation</option>
+                                <option value="Sports" {% if product.category == 'Sports' %}selected{% endif %}>Sports</option>
+                                <option value="Livres/Médias" {% if product.category == 'Livres/Médias' %}selected{% endif %}>Livres/Médias</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group mb-3">
+                            <label for="image">Image du Produit</label>
+                            <input type="file" class="form-control" id="image" name="image" accept="image/*">
+                            {% if product.image %}
+                                <small class="text-muted">Image actuelle : {{ product.image.name }}</small>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Enregistrer les modifications
+                            </button>
+                            <a href="{% url 'gestion_boutique' %}" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Annuler
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.edit-product-container {
+    margin-top: 50px;
+}
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+</style>
+{% endblock %}
